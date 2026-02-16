@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9acb6586c21fb2b4493d26579986c8ba
+guid: 04b0d2e473eeac94ebfd95c94f0ab8d3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5233517853017406009
-    second: LetraA_0
+      213: 7592785782438132153
+    second: LetraC_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LetraA_0
+      name: LetraC_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 7
-        width: 1999
-        height: 1983
+        x: 36
+        y: 3
+        width: 1900
+        height: 1989
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 93a74ca42c031a840800000000000000
-      internalID: 5233517853017406009
+      spriteID: 9b97cd9d07efe5960800000000000000
+      internalID: 7592785782438132153
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      LetraA_0: 5233517853017406009
+      LetraC_0: 7592785782438132153
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
