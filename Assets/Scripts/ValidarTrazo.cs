@@ -53,7 +53,6 @@ public class ValidarTrazo : MonoBehaviour
         {
             Debug.Log("Fuera del trazo");
 
-            // Opcional: aquí puedes reiniciar el trazo
         }
     }
 
