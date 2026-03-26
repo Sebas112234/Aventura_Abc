@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // Necesario para TextMeshPro
+using TMPro;
 using System.Collections.Generic;
 using Firebase;
 using Firebase.Firestore;
@@ -22,7 +22,10 @@ public class GameManager : MonoBehaviour {
     public TMP_Text textPalabraPista; 
     public Transform contenedorFilaSuperior; 
     public Transform contenedorFilaInferior; 
+    
+    [Header("Botones de Control")]
     public Button botonSiguiente;
+    public Button botonValidar; // Asigna el nuevo botón aquí
 
     [Header("Prefabs UI")]
     public GameObject prefabSlotSuperior; 
@@ -33,10 +36,18 @@ public class GameManager : MonoBehaviour {
     private PalabraCsharp palabraCorrectaActual;
     private int indiceSilabaOculta;
     private GameObject slotVacioGo;
+    
+    // Variables para control de validación
+    private GameObject objetoSilabaEnSlot; 
+    private string textoSilabaEnSlot = "";
 
     void Start() {
+        // Configuración inicial de botones
         botonSiguiente.onClick.AddListener(CargarSiguientePalabra);
+        botonValidar.onClick.AddListener(ValidarRespuestaManual);
+        
         botonSiguiente.interactable = false;
+        botonValidar.interactable = false;
         textPalabraPista.text = "Cargando...";
 
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
@@ -45,6 +56,7 @@ public class GameManager : MonoBehaviour {
                 DescargarTodoElDiccionario();
             } else {
                 textPalabraPista.text = "Error Firebase";
+                Debug.LogError("No se pudieron resolver las dependencias de Firebase.");
             }
         });
     }
@@ -74,7 +86,6 @@ public class GameManager : MonoBehaviour {
                         }
                     }
                 }
-                botonSiguiente.interactable = true;
                 CargarSiguientePalabra();
             }
         });
@@ -82,8 +93,16 @@ public class GameManager : MonoBehaviour {
 
     public void CargarSiguientePalabra() {
         if (listaPalabrasCargadas.Count == 0) return;
+        
         LimpiarContenedores();
 
+        // Reset de estado
+        objetoSilabaEnSlot = null;
+        textoSilabaEnSlot = "";
+        botonValidar.interactable = false;
+        botonSiguiente.interactable = false;
+
+        // Selección aleatoria
         palabraCorrectaActual = listaPalabrasCargadas[Random.Range(0, listaPalabrasCargadas.Count)];
         PalabraCsharp basura = listaPalabrasCargadas[Random.Range(0, listaPalabrasCargadas.Count)];
         
@@ -94,18 +113,21 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < palabraCorrectaActual.Silabas.Count; i++) {
             GameObject go = Instantiate(prefabSlotSuperior, contenedorFilaSuperior);
             var txt = go.GetComponentInChildren<TMP_Text>();
+            txt.color = Color.black; // Reset color
+
             if (i == indiceSilabaOculta) {
                 txt.text = "_";
                 slotVacioGo = go;
-                go.GetComponent<DropSlot>().OnItemDroppedEvent += AlSoltarSilaba;
+                go.GetComponent<DropSlot>().OnItemDroppedEvent += AlSoltarSilabaEnSlot;
             } else {
                 txt.text = palabraCorrectaActual.Silabas[i];
             }
         }
 
-        // Fila Inferior
+        // Fila Inferior (Opciones)
         List<string> opciones = new List<string> { palabraCorrectaActual.Silabas[indiceSilabaOculta] };
-        opciones.AddRange(basura.Silabas);
+        // Añadimos un par de sílabas de otra palabra para distraer
+        opciones.AddRange(basura.Silabas.Take(2)); 
         opciones = opciones.OrderBy(x => Random.value).ToList();
 
         foreach (string s in opciones) {
@@ -114,13 +136,54 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void AlSoltarSilaba(GameObject dropped) {
-        if (dropped.GetComponentInChildren<TMP_Text>().text == palabraCorrectaActual.Silabas[indiceSilabaOculta]) {
-            slotVacioGo.GetComponentInChildren<TMP_Text>().text = palabraCorrectaActual.Silabas[indiceSilabaOculta];
-            dropped.SetActive(false);
-        } else {
-            dropped.GetComponent<DragHandler>().RegresarAPosicionOriginal();
+    void AlSoltarSilabaEnSlot(GameObject dropped) {
+        // Si ya había una sílaba en el slot, devolvemos la anterior a su posición original
+        if (objetoSilabaEnSlot != null) {
+            objetoSilabaEnSlot.SetActive(true);
+            objetoSilabaEnSlot.GetComponent<DragHandler>().RegresarAPosicionOriginal();
         }
+
+        objetoSilabaEnSlot = dropped;
+        textoSilabaEnSlot = dropped.GetComponentInChildren<TMP_Text>().text;
+        
+        // Actualizar visualmente el slot vacío
+        slotVacioGo.GetComponentInChildren<TMP_Text>().text = textoSilabaEnSlot;
+        slotVacioGo.GetComponentInChildren<TMP_Text>().color = Color.blue;
+
+        // Desactivamos la ficha de abajo para que parezca que "subió"
+        dropped.SetActive(false);
+        
+        botonValidar.interactable = true;
+    }
+
+    public void ValidarRespuestaManual() {
+        string silabaCorrecta = palabraCorrectaActual.Silabas[indiceSilabaOculta];
+
+        if (textoSilabaEnSlot == silabaCorrecta) {
+            // CORRECTO
+            slotVacioGo.GetComponentInChildren<TMP_Text>().color = Color.green;
+            botonValidar.interactable = false;
+            botonSiguiente.interactable = true;
+            CargarSiguientePalabra();
+        } else {
+            // INCORRECTO
+            Debug.Log("Sílaba incorrecta, regresando...");
+            RegresarSilabaPorError();
+        }
+    }
+
+    void RegresarSilabaPorError() {
+        if (objetoSilabaEnSlot != null) {
+            objetoSilabaEnSlot.SetActive(true);
+            objetoSilabaEnSlot.GetComponent<DragHandler>().RegresarAPosicionOriginal();
+        }
+
+        slotVacioGo.GetComponentInChildren<TMP_Text>().text = "_";
+        slotVacioGo.GetComponentInChildren<TMP_Text>().color = Color.black;
+        
+        objetoSilabaEnSlot = null;
+        textoSilabaEnSlot = "";
+        botonValidar.interactable = false;
     }
 
     void LimpiarContenedores() {

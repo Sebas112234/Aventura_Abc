@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -10,47 +9,39 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private Transform originalParent;
     private Vector2 originalPosition;
 
-    private void Awake()
-    {
+    private void Awake() {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        // Guardar estado original
+    private void Start() {
+        // Guardamos la posición local inicial tras ser instanciado en el layout
         originalParent = transform.parent;
         originalPosition = rectTransform.anchoredPosition;
+    }
 
-        // Mover temporalmente al Canvas raíz para que no lo corten los paneles
+    public void OnBeginDrag(PointerEventData eventData) {
+        // Mover al frente de todo durante el arrastre
         transform.SetParent(transform.root);
-        
-        // Hacerlo semi-transparente e ignorar bloqueos de raycast
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        // Seguir el ratón/dedo
+    public void OnDrag(PointerEventData eventData) {
         rectTransform.anchoredPosition += eventData.delta / transform.root.GetComponent<Canvas>().scaleFactor;
     }
 
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        // Restaurar estado
+    public void OnEndDrag(PointerEventData eventData) {
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
-        // Si no se soltó en un drop zone válido, volver a su sitio
-        if (transform.parent == transform.root)
-        {
+        // Si no se soltó en un DropSlot, vuelve a su lugar
+        if (transform.parent == transform.root) {
             RegresarAPosicionOriginal();
         }
     }
 
-    public void RegresarAPosicionOriginal()
-    {
+    public void RegresarAPosicionOriginal() {
         transform.SetParent(originalParent);
         rectTransform.anchoredPosition = originalPosition;
     }
