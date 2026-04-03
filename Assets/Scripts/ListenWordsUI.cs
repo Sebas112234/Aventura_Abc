@@ -2,77 +2,104 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ListenWordsUI : MonoBehaviour
 {
+    [Header("UI")]
     public TMP_Text feedbackText;
     public TMP_Text roundText;
+    public TMP_Text listenLabel;
     public Button[] optionButtons;
 
-    private List<string> palabras = new List<string>()
-    {
-        "GATO", "PERRO", "ELEFANTE", "LEON", "TIGRE"
-    };
+    [Header("Settings")]
+    public string edadActual = "2-4"; 
+    public int maxRounds = 10;
 
+    private List<WordEntry> palabras = new List<WordEntry>();
     private int currentRound = 0;
-    private int maxRounds = 10;
-    private string correctAnswer;
+    private WordEntry correctWord;
 
-    void Start()
+    private void Start()
     {
+        feedbackText.text = "Cargando...";
+        roundText.text = "0 / " + maxRounds;
+
+        Invoke(nameof(BeginLoad), 1f);
+    }
+
+    void BeginLoad()
+    {
+        if (!FirebaseInitializer.IsReady)
+        {
+            feedbackText.text = "Firebase no listo";
+            return;
+        }
+
+        FirestoreNestedLoader.Instance.LoadWordsByAge(edadActual, OnWordsLoaded);
+    }
+
+    void OnWordsLoaded(List<WordEntry> loaded)
+    {
+        palabras = loaded;
+
+        if (palabras == null || palabras.Count < 4)
+        {
+            feedbackText.text = "No hay suficientes palabras";
+            return;
+        }
+
+        feedbackText.text = "";
         NextRound();
     }
 
     void NextRound()
     {
-        feedbackText.text = "";
         currentRound++;
 
         if (currentRound > maxRounds)
         {
-            Debug.Log("Juego terminado");
+            feedbackText.text = "Juego terminado";
+            roundText.text = maxRounds + " / " + maxRounds;
             return;
         }
 
         roundText.text = currentRound + " / " + maxRounds;
 
-        // elegir correcta
-        correctAnswer = palabras[Random.Range(0, palabras.Count)];
+        correctWord = palabras[Random.Range(0, palabras.Count)];
 
-        // generar opciones
-        List<string> opciones = new List<string>();
-        opciones.Add(correctAnswer);
+        List<WordEntry> opciones = new List<WordEntry>();
+        opciones.Add(correctWord);
 
         while (opciones.Count < 4)
         {
-            string random = palabras[Random.Range(0, palabras.Count)];
-            if (!opciones.Contains(random))
+            WordEntry random = palabras[Random.Range(0, palabras.Count)];
+            if (!opciones.Any(x => x.textoLimpio == random.textoLimpio))
                 opciones.Add(random);
         }
 
-        // mezclar
-        for (int i = 0; i < opciones.Count; i++)
-        {
-            string temp = opciones[i];
-            int randomIndex = Random.Range(0, opciones.Count);
-            opciones[i] = opciones[randomIndex];
-            opciones[randomIndex] = temp;
-        }
+        opciones = opciones.OrderBy(x => Random.value).ToList();
 
-        // asignar botones
         for (int i = 0; i < optionButtons.Length; i++)
         {
-            string palabra = opciones[i];
-            optionButtons[i].GetComponentInChildren<TMP_Text>().text = palabra;
-
+            WordEntry selected = opciones[i];
+            optionButtons[i].GetComponentInChildren<TMP_Text>().text = selected.textoLimpio;
             optionButtons[i].onClick.RemoveAllListeners();
-            optionButtons[i].onClick.AddListener(() => CheckAnswer(palabra));
+            optionButtons[i].onClick.AddListener(() => CheckAnswer(selected));
         }
+
+        //listenLabel.text = "Escuchar palabra";
     }
 
-    void CheckAnswer(string answer)
+    public void OnListenPressed()
     {
-        if (answer == correctAnswer)
+        // Temporal, mientras no hay audios
+        feedbackText.text = "Audio no disponible aún";
+    }
+
+    void CheckAnswer(WordEntry answer)
+    {
+        if (answer.textoLimpio == correctWord.textoLimpio)
         {
             feedbackText.text = "¡Muy bien!";
             Invoke(nameof(NextRound), 1f);
