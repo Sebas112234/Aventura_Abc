@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\google-services.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\google-services.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ListenWordsUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\ListenWordsUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\AndroidTTS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\AndroidTTS.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\TTSInitListener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\TTSInitListener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FirestoreNestedLoader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -34,11 +46,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "google-services.json",
+              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\google-services.json",
+              "RelativeDocumentMoniker": "Assets\\google-services.json",
+              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\google-services.json",
+              "RelativeToolTip": "Assets\\google-services.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-09T02:05:20.739Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TTSInitListener.cs",
+              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\TTSInitListener.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\TTSInitListener.cs",
+              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\TTSInitListener.cs",
+              "RelativeToolTip": "Assets\\Scripts\\TTSInitListener.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T00:17:47.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AndroidTTS.cs",
+              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\AndroidTTS.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\AndroidTTS.cs",
+              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\AndroidTTS.cs",
+              "RelativeToolTip": "Assets\\Scripts\\AndroidTTS.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAAAFsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-09T00:13:36.459Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "FirestoreNestedLoader.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FirestoreNestedLoader.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\FirestoreNestedLoader.cs",
@@ -46,12 +97,11 @@
               "RelativeToolTip": "Assets\\Scripts\\FirestoreNestedLoader.cs",
               "ViewState": "AgIAADwAAAAAAAAAAAAAAHMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-03T01:55:27.268Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-03T01:55:27.268Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "WordEntry.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\WordEntry.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\WordEntry.cs",
@@ -59,12 +109,11 @@
               "RelativeToolTip": "Assets\\Scripts\\WordEntry.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-03T01:52:10.848Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-03T01:52:10.848Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "FirebaseInitializer.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FirebaseInitializer.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\FirebaseInitializer.cs",
@@ -72,25 +121,24 @@
               "RelativeToolTip": "Assets\\Scripts\\FirebaseInitializer.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-03T01:49:37.031Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-03T01:49:37.031Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ListenWordsUI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ListenWordsUI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ListenWordsUI.cs",
               "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ListenWordsUI.cs",
               "RelativeToolTip": "Assets\\Scripts\\ListenWordsUI.cs",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAAAFoAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAAAGEAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-25T00:04:49.052Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "MathGameUI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\MathGameUI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\MathGameUI.cs",
@@ -102,7 +150,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "Levels_5_7_UI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Levels_5_7_UI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Levels_5_7_UI.cs",

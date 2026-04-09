@@ -61,10 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Levels_5_7_UI.cs" />
+    <Compile Include="Assets\Scripts\AndroidTTS.cs" />
     <Compile Include="Assets\Firebase\FirebaseApp\Internal\HttpHelpers.cs" />
     <Compile Include="Assets\Scripts\FirestoreNestedLoader.cs" />
     <Compile Include="Assets\Scripts\MathGameUI.cs" />
     <Compile Include="Assets\Scripts\FirebaseInitializer.cs" />
+    <Compile Include="Assets\Scripts\TTSInitListener.cs" />
     <Compile Include="Assets\Scripts\WordEntry.cs" />
     <Compile Include="Assets\Scripts\UI_Inicio.cs" />
     <Compile Include="Assets\Scripts\ListenWordsUI.cs" />

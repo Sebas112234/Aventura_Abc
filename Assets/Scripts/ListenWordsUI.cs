@@ -12,6 +12,9 @@ public class ListenWordsUI : MonoBehaviour
     public TMP_Text listenLabel;
     public Button[] optionButtons;
 
+    [Header("TTS")]
+    public AndroidTTS tts;
+
     [Header("Settings")]
     public string edadActual = "2-4"; 
     public int maxRounds = 10;
@@ -93,8 +96,33 @@ public class ListenWordsUI : MonoBehaviour
 
     public void OnListenPressed()
     {
-        // Temporal, mientras no hay audios
-        feedbackText.text = "Audio no disponible aún";
+        if (correctWord == null)
+        {
+            feedbackText.text = "No hay palabra cargada";
+            return;
+        }
+
+#if UNITY_EDITOR
+    feedbackText.text = "TTS solo funciona en Android";
+    Debug.Log("Editor: TTS no se ejecuta aquí");
+    return;
+#endif
+
+        if (tts == null)
+        {
+            feedbackText.text = "TTS no asignado";
+            return;
+        }
+
+        if (!tts.IsReady)
+        {
+            feedbackText.text = "TTS aún no está listo";
+            Debug.LogWarning("TTS aún no está listo al presionar botón");
+            return;
+        }
+
+        feedbackText.text = "";
+        tts.Speak(correctWord.texto);
     }
 
     void CheckAnswer(WordEntry answer)
