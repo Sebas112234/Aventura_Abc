@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,7 @@ public class ListenWordsUI : MonoBehaviour
     public AndroidTTS tts;
 
     [Header("Settings")]
-    public string edadActual = "2-4"; 
+    public string edadActual = "2-4";
     public int maxRounds = 10;
 
     private List<WordEntry> palabras = new List<WordEntry>();
@@ -25,20 +26,29 @@ public class ListenWordsUI : MonoBehaviour
 
     private void Start()
     {
-        feedbackText.text = "Cargando...";
+        feedbackText.text = "Inicializando Firebase...";
         roundText.text = "0 / " + maxRounds;
-
-        Invoke(nameof(BeginLoad), 1f);
+        StartCoroutine(WaitForFirebaseAndLoad());
     }
 
-    void BeginLoad()
+    IEnumerator WaitForFirebaseAndLoad()
     {
-        if (!FirebaseInitializer.IsReady)
+        float timeout = 15f;
+        float timer = 0f;
+
+        while (!FirebaseInitializer.IsReady && timer < timeout)
         {
-            feedbackText.text = "Firebase no listo";
-            return;
+            timer += Time.deltaTime;
+            yield return null;
         }
 
+        if (!FirebaseInitializer.IsReady)
+        {
+            feedbackText.text = "Firebase no se inicializó";
+            yield break;
+        }
+
+        feedbackText.text = "Cargando palabras...";
         FirestoreNestedLoader.Instance.LoadWordsByAge(edadActual, OnWordsLoaded);
     }
 
@@ -46,15 +56,28 @@ public class ListenWordsUI : MonoBehaviour
     {
         palabras = loaded;
 
-        if (palabras == null || palabras.Count < 4)
+        if (palabras == null)
         {
-            feedbackText.text = "No hay suficientes palabras";
+            feedbackText.text = "Error cargando palabras";
+            return;
+        }
+
+        if (palabras.Count == 0)
+        {
+            feedbackText.text = "Consulta vacía o timeout";
+            return;
+        }
+
+        if (palabras.Count < 4)
+        {
+            feedbackText.text = "Faltan palabras (mínimo 4)";
             return;
         }
 
         feedbackText.text = "";
         NextRound();
     }
+
 
     void NextRound()
     {
@@ -91,7 +114,8 @@ public class ListenWordsUI : MonoBehaviour
             optionButtons[i].onClick.AddListener(() => CheckAnswer(selected));
         }
 
-        //listenLabel.text = "Escuchar palabra";
+        if (listenLabel != null)
+            listenLabel.text = "Escuchar palabra";
     }
 
     public void OnListenPressed()
@@ -103,9 +127,8 @@ public class ListenWordsUI : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-    feedbackText.text = "TTS solo funciona en Android";
-    Debug.Log("Editor: TTS no se ejecuta aquí");
-    return;
+        feedbackText.text = "TTS solo funciona en Android";
+        return;
 #endif
 
         if (tts == null)
@@ -117,7 +140,6 @@ public class ListenWordsUI : MonoBehaviour
         if (!tts.IsReady)
         {
             feedbackText.text = "TTS aún no está listo";
-            Debug.LogWarning("TTS aún no está listo al presionar botón");
             return;
         }
 

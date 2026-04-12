@@ -4,20 +4,25 @@ using Firebase.Extensions;
 
 public class FirebaseInitializer : MonoBehaviour
 {
-    public static bool IsReady { get; private set; }
+    public static bool IsReady { get; private set; } = false;
 
     private void Awake()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
-            if (task.Result == DependencyStatus.Available)
+            var status = task.Result;
+            Debug.Log("Firebase dependency status: " + status);
+
+            if (status == DependencyStatus.Available)
             {
+                FirebaseApp app = FirebaseApp.DefaultInstance;
                 IsReady = true;
                 Debug.Log("Firebase listo");
             }
             else
             {
-                Debug.LogError("Firebase no disponible: " + task.Result);
+                IsReady = false;
+                Debug.LogError("Firebase no disponible: " + status);
             }
         });
     }
