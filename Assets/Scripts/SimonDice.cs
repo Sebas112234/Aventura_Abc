@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SimonDice : MonoBehaviour
 {
@@ -98,5 +99,9 @@ public class SimonDice : MonoBehaviour
         StopAllCoroutines();
         limiteActual = 1; //reinicia el progreso pero mantiene la misma secuenciaMaestra
         StartCoroutine(ReproducirSecuencia());
+    }
+    public void Menu()
+    {
+        SceneManager.LoadScene("04_Levels_5_7");
     }
 }

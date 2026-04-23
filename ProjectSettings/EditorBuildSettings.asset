@@ -17,6 +17,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/02_AgeSelect.unity
     guid: 42178ddd8fcb60844b5ee316f2731ad2
+  - enabled: 1
+    path: Assets/Scenes/04_Levels_5_7.unity
+    guid: dfa9fa50cd32cdd41890b2a0a07f216d
+  - enabled: 1
+    path: Assets/Scenes/SimonDice.unity
+    guid: ccae5e47896b93844bc1c5c6fed22aec
+  - enabled: 1
+    path: Assets/Scenes/06_Math_5_7.unity
+    guid: e9c52d312fd9cfc4fb66989f146f20c0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
