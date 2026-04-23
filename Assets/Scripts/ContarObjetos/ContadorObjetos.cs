@@ -1,12 +1,19 @@
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using System.Collections;
 
 public class ContadorObjetos : MonoBehaviour
 {
     public GameObject ObjetoPrefab;
+    public ManagerContarObj manager;
 
     public Transform Espacio1;
     public Transform Espacio2;
     public Transform Espacio3;
+    public GameObject MensajeNivel;
+    public GameObject MensajeJuego;
+    public GameObject MensajeReintentar;
 
 
     int cantidad1;
@@ -17,7 +24,7 @@ public class ContadorObjetos : MonoBehaviour
 
     void Start()
     {
-        GenerarNivel();
+        manager = FindObjectOfType<ManagerContarObj>();
     }
 
     void GenerarNivel()
@@ -43,43 +50,83 @@ public class ContadorObjetos : MonoBehaviour
         else respuestaCorrecta = 3;
     }
 
+    public void GenerarNuevoNivel()
+    {
+        LimpiarEspacios();
+        GenerarNivel();
+    }
+
     void GenerarManzanas(Transform Espacio, int cantidad)
     {
+        float distanciaMinima = 60f;
+
+        List<Vector2> posicionesUsadas = new List<Vector2>();
+
         for (int i = 0; i < cantidad; i++)
         {
-            Vector2 posicion = new Vector2(
-                Random.Range(-100, 100),
-                Random.Range(-100, 100)
-            );
+            Vector2 posicion;
+            bool posicionValida;
 
-            // Instanciar como hijo sin mantener la misma posición y ajustar transformaciones
+            int intentos = 0;
+
+            do
+            {
+                posicion = new Vector2(
+                    Random.Range(-100, 100),
+                    Random.Range(-100, 100)
+                );
+
+                posicionValida = true;
+
+                foreach (Vector2 pos in posicionesUsadas)
+                {
+                    if (Vector2.Distance(posicion, pos) < distanciaMinima)
+                    {
+                        posicionValida = false;
+                        break;
+                    }
+                }
+
+                intentos++;
+
+            } while (!posicionValida && intentos < 50);
+
+            posicionesUsadas.Add(posicion);
+
             GameObject go = Instantiate(ObjetoPrefab, Espacio, false);
-            RectTransform rt = go.GetComponent<RectTransform>();
-            if (rt != null)
-            {
-                rt.anchoredPosition = posicion;
-                rt.localScale = ObjetoPrefab.transform.localScale;
-            }
-            else
-            {
-                go.transform.localPosition = new Vector3(posicion.x, posicion.y, 0f);
-                go.transform.localScale = ObjetoPrefab.transform.localScale;
-            }
-
-            // Dar nombre único para facilitar la depuración
-            go.name = ObjetoPrefab.name + "_" + i;
+            go.transform.localPosition = posicion;
+            go.name = "Manzana_" + i;
         }
+    }
+
+    void LimpiarEspacios()
+    {
+        foreach (Transform hijo in Espacio1)
+            Destroy(hijo.gameObject);
+
+        foreach (Transform hijo in Espacio2)
+            Destroy(hijo.gameObject);
+
+        foreach (Transform hijo in Espacio3)
+            Destroy(hijo.gameObject);
     }
 
     public void Seleccionar(int opcion)
     {
         if (opcion == respuestaCorrecta)
         {
-            Debug.Log("Correcto");
+            if (manager.nivelActual < 10)
+            {
+                MensajeNivel.SetActive(true);
+                manager.StartCoroutine(manager.OcultarMensaje(MensajeNivel));
+            }
+
+            manager.NivelCompletado();
         }
         else
         {
-            Debug.Log("Incorrecto");
+            MensajeReintentar.SetActive(true);
+            manager.StartCoroutine(manager.OcultarMensaje(MensajeReintentar));
         }
     }
 }
