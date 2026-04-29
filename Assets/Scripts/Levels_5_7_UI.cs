@@ -12,4 +12,8 @@ public class Levels_5_7_UI : MonoBehaviour
     {
         SceneManager.LoadScene("02_AgeSelect");
     }
+    public void SimonDice()
+    {
+        SceneManager.LoadScene("SimonDice");
+    }
 }
