@@ -63,11 +63,18 @@
     <Compile Include="Assets\Scripts\TrazadoLetras\ManagerLetra.cs" />
     <Compile Include="Assets\Scripts\UI_Inicio.cs" />
     <Compile Include="Assets\Scripts\TrazadoLetras\ValidarTrazo.cs" />
+<<<<<<< HEAD
     <Compile Include="Assets\Scripts\FormarPalabras\DraggableSyllable.cs" />
+=======
+>>>>>>> encontrar-palabras-2
     <Compile Include="Assets\Scripts\ListenWordsUI.cs" />
     <Compile Include="Assets\Firebase\FirebaseApp\Internal\FirebaseInterops.cs" />
+    <Compile Include="Assets\Scripts\EncontrarPalabras.cs" />
     <Compile Include="Assets\Scripts\SimonDice.cs" />
+<<<<<<< HEAD
     <Compile Include="Assets\Scripts\FormarPalabras\WordGameManager.cs" />
+=======
+>>>>>>> encontrar-palabras-2
     <Compile Include="Assets\Scripts\ContarObjetos\ContadorObjetos.cs" />
     <Compile Include="Assets\Scripts\AgeSelectUI.cs" />
   </ItemGroup>
@@ -87,17 +94,21 @@
     <None Include="Assets\Firebase\Plugins\x86_64\FirebaseCppApp-13_9_0.dll" />
     <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-app-unity\maven-metadata.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
+    <None Include="Assets\Firebase\Plugins\Firebase.Auth.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Firebase\Plugins\Firebase.Database.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-auth-unity\maven-metadata.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Firebase\Plugins\iOS\Firebase.Auth.dll" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Firebase\Plugins\Firebase.Firestore.dll" />
+    <None Include="Assets\Firebase\Plugins\iOS\Firebase.Database.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Firebase\Plugins\Firebase.Platform.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
@@ -688,6 +699,14 @@
     </Reference>
     <Reference Include="Google.MiniJson">
       <HintPath>Assets\Firebase\Plugins\Google.MiniJson.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Firebase.Database">
+      <HintPath>Assets\Firebase\Plugins\Firebase.Database.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Firebase.Auth">
+      <HintPath>Assets\Firebase\Plugins\Firebase.Auth.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.Android.Types">
