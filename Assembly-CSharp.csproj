@@ -60,23 +60,31 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.3.6f1\Editor\Data\Tools\BuildPipeline\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Memorama.cs" />
+    <Compile Include="Assets\Scripts\HistorialDeJuego\VisualizadorHistorial.cs" />
     <Compile Include="Assets\Scripts\TrazadoLetras\ControlTrazo.cs" />
     <Compile Include="Assets\Scripts\Levels_5_7_UI.cs" />
     <Compile Include="Assets\Scripts\AndroidTTS.cs" />
+    <Compile Include="Assets\Scripts\HistorialDeJuego\HistorialManager.cs" />
     <Compile Include="Assets\Firebase\FirebaseApp\Internal\HttpHelpers.cs" />
     <Compile Include="Assets\Scripts\FirestoreNestedLoader.cs" />
     <Compile Include="Assets\Scripts\ContarObjetos\ManagerContarObj.cs" />
     <Compile Include="Assets\Scripts\MathGameUI.cs" />
     <Compile Include="Assets\Scripts\FirebaseInitializer.cs" />
     <Compile Include="Assets\Scripts\TTSInitListener.cs" />
+    <Compile Include="Assets\Scripts\FormarPalabras\SyllableSlot.cs" />
     <Compile Include="Assets\Scripts\WordEntry.cs" />
     <Compile Include="Assets\Scripts\TrazadoLetras\ManagerLetra.cs" />
     <Compile Include="Assets\Scripts\UI_Inicio.cs" />
     <Compile Include="Assets\Scripts\TrazadoLetras\ValidarTrazo.cs" />
+    <Compile Include="Assets\Scripts\FormarPalabras\DraggableSyllable.cs" />
+    <Compile Include="Assets\Scripts\HistorialDeJuego\PruebaHistorial.cs" />
     <Compile Include="Assets\Scripts\ListenWordsUI.cs" />
     <Compile Include="Assets\Firebase\FirebaseApp\Internal\FirebaseInterops.cs" />
     <Compile Include="Assets\Scripts\EncontrarPalabras.cs" />
+    <Compile Include="Assets\Scripts\HistorialDeJuego\FilaUI.cs" />
     <Compile Include="Assets\Scripts\SimonDice.cs" />
+    <Compile Include="Assets\Scripts\FormarPalabras\WordGameManager.cs" />
     <Compile Include="Assets\Scripts\ContarObjetos\ContadorObjetos.cs" />
     <Compile Include="Assets\Scripts\AgeSelectUI.cs" />
   </ItemGroup>
@@ -96,19 +104,25 @@
     <None Include="Assets\Firebase\Plugins\x86_64\FirebaseCppApp-13_9_0.dll" />
     <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-app-unity\maven-metadata.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
+    <None Include="Assets\Firebase\Plugins\Firebase.Auth.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\Firebase\Plugins\iOS\Firebase.Auth.dll" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Firebase\Plugins\Firebase.Database.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-auth-unity\maven-metadata.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Firebase\Plugins\Firebase.Firestore.dll" />
+    <None Include="Assets\Firebase\Plugins\iOS\Firebase.Database.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Firebase\Plugins\Firebase.Platform.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-database-unity\maven-metadata.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\Firebase\Plugins\Google.MiniJson.dll" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
@@ -661,8 +675,16 @@
       <HintPath>Assets\Firebase\Plugins\Firebase.TaskExtension.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Firebase.Auth">
+      <HintPath>Assets\Firebase\Plugins\Firebase.Auth.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.IO.Hashing">
       <HintPath>Library\PackageCache\com.unity.collections@aea9d3bd5e19\Unity.Collections.Tests\System.IO.Hashing\System.IO.Hashing.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Firebase.Database">
+      <HintPath>Assets\Firebase\Plugins\Firebase.Database.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
