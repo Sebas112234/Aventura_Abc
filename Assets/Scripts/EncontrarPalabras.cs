@@ -7,6 +7,7 @@ using System.Text;
 using System.Globalization;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using UnityEngine.SceneManagement;
 
 public class WordFinderManager : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class WordFinderManager : MonoBehaviour
 
     void FetchData() {
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-        // IMPORTANTE: Verifica que tu colección se llame "diccionario" y el documento "maestro"
+       
         db.Collection("diccionario").Document("maestro").GetSnapshotAsync().ContinueWithOnMainThread(task => {
             if (task.IsFaulted) {
                 Debug.LogError("Error Firebase: " + task.Exception);
@@ -51,7 +52,7 @@ public class WordFinderManager : MonoBehaviour
 
             DocumentSnapshot snapshot = task.Result;
             if (snapshot.Exists) {
-                // USAMOS EL NUEVO EXPLORADOR RECURSIVO
+                
                 dbWords.Clear();
                 ExplorarDiccionario(snapshot.ToDictionary());
                 
@@ -63,11 +64,11 @@ public class WordFinderManager : MonoBehaviour
         });
     }
 
-    // ESTA FUNCIÓN BUSCA PALABRAS EN CUALQUER NIVEL DEL DOCUMENTO
+
     void ExplorarDiccionario(IDictionary<string, object> nodo) {
         foreach (var entrada in nodo) {
             if (entrada.Value is IDictionary<string, object> subNodo) {
-                ExplorarDiccionario(subNodo); // Sigue bajando niveles
+                ExplorarDiccionario(subNodo); // sigue bajando niveles
             } 
             else if (entrada.Value is List<object> lista) {
                 foreach (var item in lista) {
@@ -116,7 +117,7 @@ public class WordFinderManager : MonoBehaviour
                 letterButtonsText[i].text = set[i].ToString();
             }
 
-            // --- AQUÍ ESTÁ EL LOG QUE NECESITAS ---
+           
             string chuletero = string.Join(", ", validWordsInRound);
             Debug.Log("<color=cyan><b>¡TRAMPA ACTIVADA! Las palabras son: </b></color>" + chuletero);
             
@@ -126,7 +127,7 @@ public class WordFinderManager : MonoBehaviour
 }
 
     bool IsWordFormable(string word, List<char> letters) {
-        if (word.Length < 3) return false; // Ignorar palabras de 1 o 2 letras
+        if (word.Length < 3) return false; // ignorar palabras de 1 o 2 letras
         foreach (char c in word) {
             if (!letters.Contains(c)) return false;
         }
@@ -148,9 +149,9 @@ public class WordFinderManager : MonoBehaviour
         currentWordText.text = "Palabra: " + currentInput;
     }
 
-    // Función para el botón "Borrar"
+    // funcion para el boton borrar
 public void DeleteLetter() {
-    if (!isGameActive) return; // Si ya ganó o perdió, no borramos nada
+    if (!isGameActive) return; // si ya gano o perdio, no borramos nada
     
     if (currentInput.Length > 0) {
         currentInput = currentInput.Substring(0, currentInput.Length - 1);
@@ -158,23 +159,23 @@ public void DeleteLetter() {
     }
 }
 
-// Función para el botón "Reintentar"
+// funcion para el botón reintentar
 public void StartNewGame() {
-    // 1. Detenemos cualquier proceso previo
+    // letenemos cualquier proceso previo
     isGameActive = false; 
     
-    // 2. Limpiamos listas y variables
+    // limpiamos listas y variables
     foundWords.Clear();
     currentInput = "";
     
-    // 3. Limpiamos la UI
+    // limpiamos la UI
     foundWordsListText.text = "";
     currentWordText.text = "Escribe:";
     feedbackText.text = "¡Busca las palabras!";
     feedbackText.color = Color.white;
     timeLeft = 300f; // Reiniciamos el reloj
     
-    // 4. Generamos el nuevo set de letras y activamos
+    // generamos el nuevo set de letras y activamos
     GenerateValidLetterSet();
     isGameActive = true;
     
@@ -189,7 +190,7 @@ public void StartNewGame() {
         foundWords.Add(intento);
         foundWordsListText.text += intento + "  ";
         
-        // Ahora comparamos contra la lista válida de la ronda, no contra un número fijo
+        // comparamos contra la lista valida
         feedbackText.text = $"¡Bien! {foundWords.Count}/{validWordsInRound.Count}";
         feedbackText.color = Color.green;
         
@@ -214,5 +215,18 @@ public void StartNewGame() {
         isGameActive = false;
         feedbackText.text = success ? "¡GANASTE!" : "TIEMPO AGOTADO";
         feedbackText.color = success ? Color.green : Color.red;
+    }
+    public void Menu()
+    {
+        int edad = HistorialManager.ObtenerEdadGuardada();
+
+        if (edad == 1)
+        {
+            SceneManager.LoadScene("Levels_2_4");
+        }
+        else
+        {
+            SceneManager.LoadScene("04_Levels_5_7");
+        }
     }
 }

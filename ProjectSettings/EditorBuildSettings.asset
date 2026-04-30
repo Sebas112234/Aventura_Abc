@@ -26,6 +26,30 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/06_Math_5_7.unity
     guid: e9c52d312fd9cfc4fb66989f146f20c0
+  - enabled: 1
+    path: Assets/Scenes/03_Levels_2_4.unity
+    guid: 854c4663ef964d14daf50ace24b6420e
+  - enabled: 1
+    path: Assets/Scenes/ContarObjetos.unity
+    guid: 772622b8b11421342b47a0b661fe05fc
+  - enabled: 1
+    path: Assets/Scenes/EncontrarPalabras.unity
+    guid: d40c82ba5bc586d44b08ad6d73df3cc3
+  - enabled: 1
+    path: Assets/Scenes/FormarPalabras.unity
+    guid: a90bdcd88547c444eb90e2b087c7bb7c
+  - enabled: 1
+    path: Assets/Scenes/HistorialDeJuego.unity
+    guid: 01ff827a7f4fe314f81e21e0c6ea08fd
+  - enabled: 1
+    path: Assets/Scenes/Memorama.unity
+    guid: a2c4b082328fd2c41950dbc5e3216470
+  - enabled: 1
+    path: Assets/Scenes/TrazadoLetras.unity
+    guid: 6bd303a78cc76384bab056a85a27992d
+  - enabled: 1
+    path: Assets/Scenes/TrazarFiguras.unity
+    guid: 9f51e8b10734d8c439151eaa78fedd14
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

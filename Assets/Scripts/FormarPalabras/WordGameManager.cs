@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Linq;
-using TMPro; // <--- Si esto sale en rojo en tu editor, necesitas importar TMP en Unity
+using TMPro; // C=3
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class WordData {
@@ -152,14 +153,27 @@ public class WordGameManager : MonoBehaviour {
         draggedScript.gameObject.SetActive(false);
         Invoke("StartNewRound", 1.2f);
     } else {
-        // DETALLE 1: Texto rojo "Intenta otra vez"
+       
         feedbackText.text = "Intenta otra vez";
         feedbackText.color = Color.red;
 
-        // DETALLE 2: Evitar softlock llamando al reset del script de arrastre
+     
         draggedScript.ReturnToStart();
     }
 }
 
     public void SkipWord() => StartNewRound();
+    public void Menu()
+    {
+        int edad = HistorialManager.ObtenerEdadGuardada();
+
+        if (edad == 1)
+        {
+            SceneManager.LoadScene("Levels_2_4");
+        }
+        else
+        {
+            SceneManager.LoadScene("04_Levels_5_7");
+        }
+    }
 }

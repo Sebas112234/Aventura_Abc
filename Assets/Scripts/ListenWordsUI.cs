@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class ListenWordsUI : MonoBehaviour
 {
@@ -159,4 +160,18 @@ public class ListenWordsUI : MonoBehaviour
             feedbackText.text = "Inténtalo de nuevo";
         }
     }
+    public void Menu()
+    {
+        int edad = HistorialManager.ObtenerEdadGuardada();
+
+        if (edad == 1)
+        {
+            SceneManager.LoadScene("03_Levels_2_4");
+        }
+        else
+        {
+            SceneManager.LoadScene("04_Levels_5_7");
+        }
+    }
+
 }

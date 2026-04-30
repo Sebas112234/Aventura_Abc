@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ContadorObjetos : MonoBehaviour
 {
@@ -127,6 +128,19 @@ public class ContadorObjetos : MonoBehaviour
         {
             MensajeReintentar.SetActive(true);
             manager.StartCoroutine(manager.OcultarMensaje(MensajeReintentar));
+        }
+    }
+    public void Menu()
+    {
+        int edad = HistorialManager.ObtenerEdadGuardada();
+
+        if (edad == 1)
+        {
+            SceneManager.LoadScene("03_Levels_2_4");
+        }
+        else
+        {
+            SceneManager.LoadScene("04_Levels_5_7");
         }
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 // ESTA PARTE DEFINE LOS DATOS
 [System.Serializable]
@@ -55,5 +56,18 @@ public class HistorialManager : MonoBehaviour {
     public static int ObtenerEdadGuardada() {
         // Retorna el valor guardado, o 0 si aún no se ha seleccionado nada
         return PlayerPrefs.GetInt("AgeGroup", 0);
+    }
+    public void Menu()
+    {
+        int edad = HistorialManager.ObtenerEdadGuardada();
+
+        if (edad == 1)
+        {
+            SceneManager.LoadScene("Levels_2_4");
+        }
+        else
+        {
+            SceneManager.LoadScene("04_Levels_5_7");
+        }
     }
 }

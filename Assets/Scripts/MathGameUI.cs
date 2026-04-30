@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public enum MathLevel
 {
@@ -41,6 +42,7 @@ public class MathGameUI : MonoBehaviour
     {
         GenerateProblem();
     }
+    
 
     void GenerateProblem()
     {
@@ -130,10 +132,29 @@ public class MathGameUI : MonoBehaviour
             feedbackText.color = Color.red;
         }
     }
+    public void Menu()
+    {
+        int edad = HistorialManager.ObtenerEdadGuardada();
 
+        if (edad == 1)
+        {
+            SceneManager.LoadScene("03_Levels_2_4");
+        }
+        else
+        {
+            SceneManager.LoadScene("04_Levels_5_7");
+        }
+    }
     public void Next()
     {
         btnNext.gameObject.SetActive(false);
         GenerateProblem();
     }
+    public void Next127()
+    {
+        btnNext.gameObject.SetActive(false);
+        GenerateProblem();
+    }
+
+    
 }

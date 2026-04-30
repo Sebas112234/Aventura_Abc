@@ -7,7 +7,7 @@ public class AgeSelectUI : MonoBehaviour
     {
         PlayerPrefs.SetInt("AgeGroup", 1);
         PlayerPrefs.Save(); // Forzamos el guardado en disco
-        SceneManager.LoadScene("Levels_2_4"); // Cambié a la escena de niveles correspondiente
+        SceneManager.LoadScene("03_Levels_2_4"); // Cambié a la escena de niveles correspondiente
     }
 
     public void Select6to8()
@@ -20,5 +20,9 @@ public class AgeSelectUI : MonoBehaviour
     public void Back()
     {
         SceneManager.LoadScene("01_Welcome");
+    }
+    public void Historial()
+    {
+        SceneManager.LoadScene("HistorialDeJuego");
     }
 }

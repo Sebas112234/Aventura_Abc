@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ManagerContarObj : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class ManagerContarObj : MonoBehaviour
         {
             contador.MensajeJuego.SetActive(true);
             StartCoroutine(OcultarMensaje(contador.MensajeJuego));
+            SceneManager.LoadScene("03_Levels_2_4");
         }
     }
 
