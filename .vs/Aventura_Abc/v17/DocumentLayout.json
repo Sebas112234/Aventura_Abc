@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Levels_5_7_UI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Levels_5_7_UI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\SimonDice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\SimonDice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Levels_5_7_UI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Levels_5_7_UI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\AgeSelectUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,11 +38,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Levels_5_7_UI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Levels_5_7_UI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Levels_5_7_UI.cs",
@@ -63,18 +63,17 @@
               "RelativeToolTip": "Assets\\Scripts\\AgeSelectUI.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T15:53:08.279Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-23T15:53:08.279Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "SimonDice.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\SimonDice.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\SimonDice.cs",
               "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\SimonDice.cs",
               "RelativeToolTip": "Assets\\Scripts\\SimonDice.cs",
-              "ViewState": "AgIAAFsAAAAAAAAAAAAAAGYAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAAAGcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-23T15:48:13.803Z",
               "EditorCaption": ""
@@ -125,8 +124,7 @@
               "RelativeToolTip": "Assets\\Scripts\\ListenWordsUI.cs",
               "ViewState": "AgIAAKEAAAAAAAAAAAAAAIUAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T00:04:49.052Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-25T00:04:49.052Z"
             }
           ]
         }
