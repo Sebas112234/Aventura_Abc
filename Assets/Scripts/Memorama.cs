@@ -2,54 +2,70 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class MemoryGame : MonoBehaviour
 {
     [Header("Configuración de UI")]
     public GameObject cardPrefab;
     public Transform gridParent;
+    public GameObject victoryText; // Arrastra aquí tu texto de "Juego Completado"
 
-    private List<Color> colors = new List<Color> {
-        Color.red, Color.red,
-        Color.blue, Color.blue,
-        Color.green, Color.green,
-        Color.yellow, Color.yellow,
-        Color.magenta, Color.magenta,
-        Color.cyan, Color.cyan
-    };
+    [Header("Sprites de las Cartas")]
+    public List<Sprite> cardSprites; 
 
+    private List<GameObject> spawnedCards = new List<GameObject>();
     private GameObject firstSelected;
     private GameObject secondSelected;
     private bool isChecking = false;
+    private int pairsFound = 0;
+    private int totalPairs;
 
     void Start()
     {
-        Shuffle(colors);
+        totalPairs = cardSprites.Count / 2;
+        SetupGame();
+    }
+
+    void SetupGame()
+    {
+        // Limpiamos datos anteriores
+        pairsFound = 0;
+        victoryText.SetActive(false);
+        
+        // Borramos cartas viejas si existen
+        foreach (GameObject card in spawnedCards) Destroy(card);
+        spawnedCards.Clear();
+
+        Shuffle(cardSprites);
         SetupGrid();
     }
 
     void SetupGrid()
     {
-        for (int i = 0; i < colors.Count; i++)
+        for (int i = 0; i < cardSprites.Count; i++)
         {
             GameObject newCard = Instantiate(cardPrefab, gridParent);
+            spawnedCards.Add(newCard); // Las guardamos para poder borrarlas al reiniciar
+
             Image cardImage = newCard.transform.Find("ColorOverlay").GetComponent<Image>();
-            cardImage.color = colors[i];
-            
-            // Ocultar el color al inicio
+            cardImage.sprite = cardSprites[i];
+            cardImage.color = Color.white; 
             cardImage.gameObject.SetActive(false);
 
+            TextMeshProUGUI buttonText = newCard.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null) buttonText.text = "?";
+
             Button btn = newCard.GetComponent<Button>();
-            int index = i; // Capturar índice para el listener
             btn.onClick.AddListener(() => OnCardClicked(newCard, cardImage.gameObject));
         }
     }
 
-    void OnCardClicked(GameObject card, GameObject colorOverlay)
+    void OnCardClicked(GameObject card, GameObject imageOverlay)
     {
-        if (isChecking || colorOverlay.activeSelf || card == firstSelected) return;
+        if (isChecking || imageOverlay.activeSelf || card == firstSelected) return;
 
-        colorOverlay.SetActive(true);
+        imageOverlay.SetActive(true);
 
         if (firstSelected == null)
         {
@@ -66,14 +82,24 @@ public class MemoryGame : MonoBehaviour
     {
         isChecking = true;
         
-        Color color1 = firstSelected.transform.Find("ColorOverlay").GetComponent<Image>().color;
-        Color color2 = secondSelected.transform.Find("ColorOverlay").GetComponent<Image>().color;
+        Sprite sprite1 = firstSelected.transform.Find("ColorOverlay").GetComponent<Image>().sprite;
+        Sprite sprite2 = secondSelected.transform.Find("ColorOverlay").GetComponent<Image>().sprite;
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.6f);
 
-        if (color1 != color2)
+        if (sprite1 == sprite2)
         {
-            // Si no son iguales, se ocultan
+            firstSelected.GetComponent<Button>().interactable = false;
+            secondSelected.GetComponent<Button>().interactable = false;
+            pairsFound++;
+            
+            if (pairsFound >= totalPairs)
+            {
+                victoryText.SetActive(true);
+            }
+        }
+        else
+        {
             firstSelected.transform.Find("ColorOverlay").gameObject.SetActive(false);
             secondSelected.transform.Find("ColorOverlay").gameObject.SetActive(false);
         }
@@ -83,11 +109,18 @@ public class MemoryGame : MonoBehaviour
         isChecking = false;
     }
 
-    void Shuffle(List<Color> list)
+    // Esta es la función que debes asignar al botón de Reiniciar en el Inspector
+    public void RestartGame()
+    {
+        if (isChecking) return; // Evita reiniciar mientras se están comparando cartas
+        SetupGame();
+    }
+
+    void Shuffle(List<Sprite> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
-            Color temp = list[i];
+            Sprite temp = list[i];
             int randomIndex = Random.Range(i, list.Count);
             list[i] = list[randomIndex];
             list[randomIndex] = temp;
