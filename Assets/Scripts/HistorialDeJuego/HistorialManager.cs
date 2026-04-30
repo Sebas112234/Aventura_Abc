@@ -50,4 +50,10 @@ public class HistorialManager : MonoBehaviour {
         if (!File.Exists(PathPersistente)) return new HistorialGeneral();
         return JsonUtility.FromJson<HistorialGeneral>(File.ReadAllText(PathPersistente));
     }
+
+    // Nueva función para obtener la edad guardada desde cualquier lugar
+    public static int ObtenerEdadGuardada() {
+        // Retorna el valor guardado, o 0 si aún no se ha seleccionado nada
+        return PlayerPrefs.GetInt("AgeGroup", 0);
+    }
 }

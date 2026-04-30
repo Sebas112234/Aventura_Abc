@@ -102,6 +102,12 @@ public class SimonDice : MonoBehaviour
     }
     public void Menu()
     {
-        SceneManager.LoadScene("04_Levels_5_7");
+        // Llamamos a la función que creamos en el Manager
+        int edad = HistorialManager.ObtenerEdadGuardada();
+
+        if (edad == 1) // 1 = Rango 2-4 años
+            SceneManager.LoadScene("Levels_2_4");
+        else // 2 = Rango 5-7 años
+            SceneManager.LoadScene("04_Levels_5_7");
     }
 }
