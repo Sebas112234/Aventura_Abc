@@ -129,8 +129,9 @@ public class WordFinderManager : MonoBehaviour
         return true;
     }
 
-    System.Collections.IEnumerator RegresoAutomaticoMenu()
+    IEnumerator RegresoAutomaticoMenu()
     {
+        puedeJugar = false;
         yield return new WaitForSeconds(3.5f);
         Menu();
     }

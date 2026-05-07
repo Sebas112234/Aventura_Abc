@@ -40,7 +40,7 @@ public class WordGameManager : MonoBehaviour {
     private int wordsPlayed = 0;
     private const int MAX_WORDS_PER_ROUND = 10;
     private string currentPlacedSyllable = ""; 
-    private DraggableSyllable activeDraggedObject;
+    private DraggableSyllable activeDraggedObject; 
 
     void Start() {
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
@@ -186,8 +186,9 @@ public class WordGameManager : MonoBehaviour {
         activeDraggedObject = null;
     }
 
-    System.Collections.IEnumerator RegresoAutomaticoMenu()
+    IEnumerator RegresoAutomaticoMenu()
     {
+        puedeJugar = false;
         yield return new WaitForSeconds(3.5f);
         Menu();
     }

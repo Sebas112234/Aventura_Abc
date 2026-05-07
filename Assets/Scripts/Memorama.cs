@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class MemoryGame : MonoBehaviour
 {
@@ -64,16 +63,19 @@ public class MemoryGame : MonoBehaviour
 
     void OnCardClicked(GameObject card, GameObject imageOverlay)
     {
-        if (isChecking || imageOverlay.activeSelf || card == firstSelected) 
-            return;
+        if (isChecking || imageOverlay.activeSelf || card == firstSelected) return;
 
         imageOverlay.SetActive(true);
 
         if (firstSelected == null)
+        {
             firstSelected = card;
+        }
         else
+        {
             secondSelected = card;
             StartCoroutine(CheckMatch());
+        }
     }
 
     IEnumerator CheckMatch()
@@ -110,6 +112,7 @@ public class MemoryGame : MonoBehaviour
 
     IEnumerator RegresoAutomaticoMenu()
     {
+        puedeJugar = false;
         yield return new WaitForSeconds(3.5f);
         Menu();
     }
@@ -129,14 +132,5 @@ public class MemoryGame : MonoBehaviour
             list[i] = list[randomIndex];
             list[randomIndex] = temp;
         }
-    }
-
-    public void Menu()
-    {
-        int edad = HistorialManager.ObtenerEdadGuardada();
-        if (edad == 1) 
-            SceneManager.LoadScene("Levels_2_4");
-        else   
-            SceneManager.LoadScene("04_Levels_5_7");
     }
 }
