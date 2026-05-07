@@ -1,8 +1,7 @@
+using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using TMPro;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class ManagerFig : MonoBehaviour
 {
@@ -15,9 +14,6 @@ public class ManagerFig : MonoBehaviour
     public GameObject Instruccion;
     public float tiempoMensaje = 1.5f;
     public Color colorCompletado = Color.green;
-
-    public GameObject botonMenu;
-    public GameObject botonMenuPanel;
 
     private bool[] FigurasCompletadas = new bool[7];
 
@@ -41,9 +37,7 @@ public class ManagerFig : MonoBehaviour
 
     public void MostrarFig(int index)
     {
-        botonMenu.SetActive(false);
-        botonMenuPanel.SetActive(true);
-
+        Debug.Log("CLICK FUNCIONA");
         FiguraActual = index;
 
         PanelFig.SetActive(false);
@@ -117,25 +111,9 @@ public class ManagerFig : MonoBehaviour
 
     public void RegresarPanel()
     {
-        botonMenu.SetActive(true);
-        botonMenuPanel.SetActive(false);
         ContenedorFig.SetActive(false);
         PanelFig.SetActive(true);
         Instruccion.SetActive(true);
 
-    }
-
-    public void Menu()
-    {
-        int edad = HistorialManager.ObtenerEdadGuardada();
-
-        if (edad == 1)
-        {
-            SceneManager.LoadScene("03_Levels_2_4");
-        }
-        else
-        {
-            SceneManager.LoadScene("04_Levels_5_7");
-        }
     }
 }
