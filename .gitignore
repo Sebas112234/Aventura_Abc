@@ -12,6 +12,14 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
+Library/
+Temp/
+Obj/
+Build/
+*.csproj
+*.unityproj
+*.sln
+
 *.dll
 *.so
 *.bundle
