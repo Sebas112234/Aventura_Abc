@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Memorama.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\Memorama.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ListenWordsUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\ListenWordsUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -70,24 +74,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ManagerContarObj.cs",
-              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
-              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
-              "RelativeToolTip": "Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAiAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Memorama.cs",
+              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Memorama.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Memorama.cs",
+              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Memorama.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Memorama.cs",
+              "ViewState": "AgIAAHsAAAAAAAAAAAAAAFAAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-30T19:14:31.166Z",
+              "WhenOpened": "2026-05-07T19:37:02.549Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "PruebaHistorial.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\HistorialDeJuego\\PruebaHistorial.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HistorialDeJuego\\PruebaHistorial.cs",
@@ -99,7 +103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "WordGameManager.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FormarPalabras\\WordGameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\FormarPalabras\\WordGameManager.cs",
@@ -111,7 +115,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "HistorialManager.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\HistorialDeJuego\\HistorialManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\HistorialDeJuego\\HistorialManager.cs",
@@ -123,7 +127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "MathGameUI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\MathGameUI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\MathGameUI.cs",
@@ -135,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ListenWordsUI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ListenWordsUI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ListenWordsUI.cs",
@@ -148,7 +152,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
+              "Title": "ManagerContarObj.cs",
+              "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
+              "ToolTip": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
+              "RelativeToolTip": "Assets\\Scripts\\ContarObjetos\\ManagerContarObj.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T19:14:31.166Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "DraggableSyllable.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FormarPalabras\\DraggableSyllable.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\FormarPalabras\\DraggableSyllable.cs",
@@ -160,7 +176,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "ContadorObjetos.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\ContarObjetos\\ContadorObjetos.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ContarObjetos\\ContadorObjetos.cs",
@@ -172,7 +188,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "EncontrarPalabras.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\EncontrarPalabras.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\EncontrarPalabras.cs",
@@ -184,7 +200,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "AgeSelectUI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\AgeSelectUI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\AgeSelectUI.cs",
@@ -196,7 +212,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "SimonDice.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\SimonDice.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\SimonDice.cs",
@@ -208,7 +224,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "FirestoreNestedLoader.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FirestoreNestedLoader.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\FirestoreNestedLoader.cs",
@@ -220,7 +236,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "WordEntry.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\WordEntry.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\WordEntry.cs",
@@ -232,7 +248,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Levels_5_7_UI.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\Levels_5_7_UI.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Levels_5_7_UI.cs",
@@ -244,7 +260,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "FirebaseInitializer.cs",
               "DocumentMoniker": "C:\\Users\\Usuario\\Documents\\GitHub\\Aventura_Abc\\Assets\\Scripts\\FirebaseInitializer.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\FirebaseInitializer.cs",
