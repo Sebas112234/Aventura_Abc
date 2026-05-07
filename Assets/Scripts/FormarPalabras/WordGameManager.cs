@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Linq;
-using TMPro; // C=3
+using TMPro;
 using UnityEngine.SceneManagement;
 
 [Serializable]
@@ -29,7 +29,7 @@ public class WordGameManager : MonoBehaviour {
     public Transform targetWordContainer; 
     public Transform optionsContainer;    
     public GameObject syllablePrefab;     
-    public TextMeshProUGUI feedbackText;    // Error CS0246 suele apuntar aquí
+    public TextMeshProUGUI feedbackText;    
     public TextMeshProUGUI roundCounterText;
     public GameObject completedPanel;
 
@@ -39,56 +39,45 @@ public class WordGameManager : MonoBehaviour {
     private string missingSyllable;
     private int wordsPlayed = 0;
     private const int MAX_WORDS_PER_ROUND = 10;
+    private string currentPlacedSyllable = ""; 
+    private DraggableSyllable activeDraggedObject; 
 
     void Start() {
-        // Inicialización segura de Firebase
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available) {
+            if (task.Result == Firebase.DependencyStatus.Available) {
                 db = FirebaseFirestore.DefaultInstance;
                 completedPanel.SetActive(false);
-                feedbackText.text = "Conectado. Cargando datos...";
+                feedbackText.text = "Cargando palabras...";
                 FetchWordsFromFirestore();
             } else {
-                Debug.LogError("No se pudieron resolver las dependencias de Firebase: " + dependencyStatus);
-                feedbackText.text = "Error de dependencias Firebase";
+                feedbackText.text = "Error Firebase";
             }
         });
     }
 
     void FetchWordsFromFirestore() {
         db.Collection("diccionario").Document("maestro").GetSnapshotAsync().ContinueWithOnMainThread(task => {
-            if (task.IsFaulted) {
-                feedbackText.text = "Error de red";
-                return;
-            }
-
-            DocumentSnapshot snapshot = task.Result;
-            if (snapshot.Exists) {
-                MapearDiccionario(snapshot.ToDictionary());
+            if (snapshotExists(task)) {
+                MapearDiccionario(task.Result.ToDictionary());
                 if (allWords.Count > 0) StartNewRound();
-                else feedbackText.text = "Banco de palabras vacío";
             }
         });
+    }
+
+    bool snapshotExists(System.Threading.Tasks.Task<DocumentSnapshot> task) {
+        return !task.IsFaulted && task.Result.Exists;
     }
 
     void MapearDiccionario(IDictionary<string, object> root) {
         allWords.Clear();
         foreach (var ageGroup in root) {
-            var categories = ageGroup.Value as IDictionary<string, object>;
-            if (categories == null) continue;
-
+            if (!(ageGroup.Value is IDictionary<string, object> categories)) continue;
             foreach (var category in categories) {
-                var levels = category.Value as IDictionary<string, object>;
-                if (levels == null) continue;
-
+                if (!(category.Value is IDictionary<string, object> levels)) continue;
                 foreach (var levelEntry in levels) {
-                    var wordList = levelEntry.Value as List<object>;
-                    if (wordList == null) continue;
-
+                    if (!(levelEntry.Value is List<object> wordList)) continue;
                     foreach (var item in wordList) {
-                        var wordMap = item as IDictionary<string, object>;
-                        if (wordMap != null && wordMap.ContainsKey("silabas")) {
+                        if (item is IDictionary<string, object> wordMap && wordMap.ContainsKey("silabas")) {
                             allWords.Add(new WordData(
                                 wordMap.ContainsKey("texto") ? wordMap["texto"].ToString() : "Sin nombre", 
                                 wordMap["silabas"] as List<object>, 
@@ -104,26 +93,30 @@ public class WordGameManager : MonoBehaviour {
     public void StartNewRound() {
         if (wordsPlayed >= MAX_WORDS_PER_ROUND) {
             completedPanel.SetActive(true);
-            return;
+            StartCoroutine(RegresoAutomaticoMenu());
         }
+
+        currentPlacedSyllable = "";
+        activeDraggedObject = null;
 
         foreach (Transform child in targetWordContainer) Destroy(child.gameObject);
         foreach (Transform child in optionsContainer) Destroy(child.gameObject);
         
         targetWord = allWords[UnityEngine.Random.Range(0, allWords.Count)];
-        WordData garbageWord = allWords[UnityEngine.Random.Range(0, allWords.Count)];
-
         int missingIndex = UnityEngine.Random.Range(0, targetWord.silabas.Count);
         missingSyllable = targetWord.silabas[missingIndex];
 
         for (int i = 0; i < targetWord.silabas.Count; i++) {
             GameObject go = Instantiate(syllablePrefab, targetWordContainer);
-            var slot = go.GetComponent<SyllableSlot>();
-            slot.Setup(i == missingIndex ? "-" : targetWord.silabas[i], i == missingIndex);
+            go.GetComponent<SyllableSlot>().Setup(i == missingIndex ? "-" : targetWord.silabas[i], i == missingIndex);
         }
 
+        //generar opciones (Correcta + 2 aleatorias)
         List<string> options = new List<string> { missingSyllable };
-        options.AddRange(garbageWord.silabas);
+        while(options.Count < 3) {
+            string randomSil = allWords[UnityEngine.Random.Range(0, allWords.Count)].silabas[0];
+            if(!options.Contains(randomSil)) options.Add(randomSil);
+        }
         options = options.OrderBy(x => UnityEngine.Random.value).ToList();
 
         foreach (string s in options) {
@@ -133,47 +126,77 @@ public class WordGameManager : MonoBehaviour {
 
         wordsPlayed++;
         roundCounterText.text = $"Palabra {wordsPlayed}/{MAX_WORDS_PER_ROUND}";
+        feedbackText.text = "Arrastra la sílaba faltante";
+        feedbackText.color = Color.white;
     }
 
     public void OnSyllableDropped(string value, DraggableSyllable draggedScript) {
-    if (value == missingSyllable) {
-        // CORRECCIÓN PARA EL SOFTLOCK: Asegurarnos que el feedback sea positivo
-        feedbackText.text = "¡Excelente!";
-        feedbackText.color = Color.green;
+        //si ya había una, regresamos la anterior abajo
+        if (activeDraggedObject != null) {
+            activeDraggedObject.gameObject.SetActive(true);
+            activeDraggedObject.ReturnToStart();
+        }
 
-        // Actualizar visualmente el hueco arriba
+        currentPlacedSyllable = value;
+        activeDraggedObject = draggedScript;
+
         foreach (Transform child in targetWordContainer) {
             var slot = child.GetComponent<SyllableSlot>();
             if (slot != null && slot.isPlaceholder) {
                 slot.textMesh.text = value;
-                slot.textMesh.color = Color.green;
+                slot.textMesh.color = new Color(0.2f, 0.5f, 1f); //azul
             }
         }
 
         draggedScript.gameObject.SetActive(false);
-        Invoke("StartNewRound", 1.2f);
-    } else {
-       
-        feedbackText.text = "Intenta otra vez";
-        feedbackText.color = Color.red;
-
-     
-        draggedScript.ReturnToStart();
+        feedbackText.text = "¿Es correcta?";
     }
-}
+
+    public void ValidarPalabra() {
+        if (string.IsNullOrEmpty(currentPlacedSyllable)) {
+            feedbackText.text = "Primero coloca una sílaba";
+            return;
+        }
+
+        if (currentPlacedSyllable == missingSyllable) {
+            feedbackText.text = "¡Muy bien!";
+            feedbackText.color = Color.green;
+            Invoke("StartNewRound", 1.2f);
+        } else {
+            feedbackText.text = "Casi, intenta de nuevo";
+            feedbackText.color = Color.red;
+            ResetPlaceholder(); //regresa la sílaba abajo
+        }
+    }
+
+    public void ResetPlaceholder() {
+        if (activeDraggedObject != null) {
+            activeDraggedObject.gameObject.SetActive(true);
+            activeDraggedObject.ReturnToStart();
+        }
+
+        foreach (Transform child in targetWordContainer) {
+            var slot = child.GetComponent<SyllableSlot>();
+            if (slot != null && slot.isPlaceholder) {
+                slot.textMesh.text = "-";
+                slot.textMesh.color = Color.black;
+            }
+        }
+        currentPlacedSyllable = "";
+        activeDraggedObject = null;
+    }
+
+    IEnumerator RegresoAutomaticoMenu()
+    {
+        puedeJugar = false;
+        yield return new WaitForSeconds(3.5f);
+        Menu();
+    }
 
     public void SkipWord() => StartNewRound();
-    public void Menu()
-    {
+    
+    public void Menu() {
         int edad = HistorialManager.ObtenerEdadGuardada();
-
-        if (edad == 1)
-        {
-            SceneManager.LoadScene("Levels_2_4");
-        }
-        else
-        {
-            SceneManager.LoadScene("04_Levels_5_7");
-        }
+        SceneManager.LoadScene(edad == 1 ? "Levels_2_4" : "04_Levels_5_7");
     }
 }

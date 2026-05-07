@@ -3,54 +3,67 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 public class DraggableSyllable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
-    private WordGameManager manager;
     private Vector3 startPosition;
-    private string myValue;
+    private Transform startParent;
     private CanvasGroup canvasGroup;
+    private string syllableValue;
+    private WordGameManager manager;
+    private Canvas mainCanvas;
 
     public void Init(string val, WordGameManager mgr) {
-        myValue = val;
+        syllableValue = val;
         manager = mgr;
         GetComponentInChildren<TextMeshProUGUI>().text = val;
         canvasGroup = GetComponent<CanvasGroup>();
-        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        mainCanvas = GetComponentInParent<Canvas>();
+        startPosition = transform.position;
+        startParent = transform.parent;
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
-    startPosition = transform.position;
-    
-    // ESTO ES CLAVE: Al empezar a arrastrar, el objeto deja de bloquear raycasts
-    // para que el sistema pueda ver lo que hay DEBAJO de él.
-    canvasGroup.blocksRaycasts = false; 
-    canvasGroup.alpha = 0.6f;
-}
+        canvasGroup.alpha = 0.6f;
+        canvasGroup.blocksRaycasts = false;
+        startPosition = transform.position; // Actualizamos por si el layout se movió
+        transform.SetParent(mainCanvas.transform); 
+    }
 
-public void OnEndDrag(PointerEventData eventData) {
-    // Al soltar, primero revisamos qué hay debajo (gracias a que blocksRaycasts es false)
-    GameObject hovered = eventData.pointerEnter;
+    public void OnDrag(PointerEventData eventData) {
+        // SOLUCIÓN DEFINITIVA AL DESFASE:
+        // Convertimos la posición del mouse directamente a un punto en el mundo de la UI
+        Vector3 worldPoint;
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            mainCanvas.transform as RectTransform, 
+            eventData.position, 
+            mainCanvas.worldCamera, 
+            out worldPoint
+        );
+        transform.position = worldPoint;
+    }
 
-    if (hovered != null && hovered.CompareTag("SyllableSlot")) {
-        manager.OnSyllableDropped(myValue, this);
-    } else {
+    public void OnEndDrag(PointerEventData eventData) {
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+
+        // NUEVA DETECCIÓN SIN TAGS:
+        // Buscamos si debajo del mouse hay un objeto que tenga el script SyllableSlot
+        GameObject hitObject = eventData.pointerEnter;
+        
+        if (hitObject != null) {
+            SyllableSlot slot = hitObject.GetComponentInParent<SyllableSlot>();
+            
+            // Si el objeto tiene el script y además ES el hueco faltante
+            if (slot != null && slot.isPlaceholder) {
+                manager.OnSyllableDropped(syllableValue, this);
+                return;
+            }
+        }
+
+        // Si no cayó en el lugar correcto, vuelve a su sitio
         ReturnToStart();
     }
 
-    // FINALMENTE, reactivamos para que se pueda volver a agarrar
-    canvasGroup.blocksRaycasts = true;
-    canvasGroup.alpha = 1f;
-}
-
-    public void OnDrag(PointerEventData eventData) {
-        transform.position = Input.mousePosition;
+    public void ReturnToStart() {
+        transform.SetParent(startParent);
+        transform.position = startPosition;
     }
-
-
-public void ReturnToStart() {
-    transform.position = startPosition;
-    // Aseguramos que el componente sea interactuable de nuevo
-    if(canvasGroup != null) {
-        canvasGroup.blocksRaycasts = true;
-        canvasGroup.alpha = 1f;
-    }
-}
 }

@@ -9,7 +9,7 @@ public class MemoryGame : MonoBehaviour
     [Header("Configuración de UI")]
     public GameObject cardPrefab;
     public Transform gridParent;
-    public GameObject victoryText; // Arrastra aquí tu texto de "Juego Completado"
+    public GameObject victoryText;
 
     [Header("Sprites de las Cartas")]
     public List<Sprite> cardSprites; 
@@ -29,11 +29,11 @@ public class MemoryGame : MonoBehaviour
 
     void SetupGame()
     {
-        // Limpiamos datos anteriores
+        //limpiamos datos anteriores
         pairsFound = 0;
         victoryText.SetActive(false);
         
-        // Borramos cartas viejas si existen
+        //borramos cartas viejas si existen
         foreach (GameObject card in spawnedCards) Destroy(card);
         spawnedCards.Clear();
 
@@ -46,7 +46,7 @@ public class MemoryGame : MonoBehaviour
         for (int i = 0; i < cardSprites.Count; i++)
         {
             GameObject newCard = Instantiate(cardPrefab, gridParent);
-            spawnedCards.Add(newCard); // Las guardamos para poder borrarlas al reiniciar
+            spawnedCards.Add(newCard); 
 
             Image cardImage = newCard.transform.Find("ColorOverlay").GetComponent<Image>();
             cardImage.sprite = cardSprites[i];
@@ -96,6 +96,7 @@ public class MemoryGame : MonoBehaviour
             if (pairsFound >= totalPairs)
             {
                 victoryText.SetActive(true);
+                StartCoroutine(RegresoAutomaticoMenu());
             }
         }
         else
@@ -109,10 +110,16 @@ public class MemoryGame : MonoBehaviour
         isChecking = false;
     }
 
-    // Esta es la función que debes asignar al botón de Reiniciar en el Inspector
+    IEnumerator RegresoAutomaticoMenu()
+    {
+        puedeJugar = false;
+        yield return new WaitForSeconds(3.5f);
+        Menu();
+    }
+
     public void RestartGame()
     {
-        if (isChecking) return; // Evita reiniciar mientras se están comparando cartas
+        if (isChecking) return;
         SetupGame();
     }
 
