@@ -26,7 +26,6 @@ public class WordFinderManager : MonoBehaviour
     private string currentInput = "";
     private float timeLeft = 300f; 
     private bool isGameActive = false;
-    private int targetCountThisRound = 10;
 
     void Start() {
         Debug.Log("<color=yellow>1. Iniciando Juego...</color>");
@@ -52,7 +51,6 @@ public class WordFinderManager : MonoBehaviour
 
             DocumentSnapshot snapshot = task.Result;
             if (snapshot.Exists) {
-                
                 dbWords.Clear();
                 ExplorarDiccionario(snapshot.ToDictionary());
                 
@@ -64,11 +62,10 @@ public class WordFinderManager : MonoBehaviour
         });
     }
 
-
     void ExplorarDiccionario(IDictionary<string, object> nodo) {
         foreach (var entrada in nodo) {
             if (entrada.Value is IDictionary<string, object> subNodo) {
-                ExplorarDiccionario(subNodo); // sigue bajando niveles
+                ExplorarDiccionario(subNodo);
             } 
             else if (entrada.Value is List<object> lista) {
                 foreach (var item in lista) {
@@ -87,51 +84,56 @@ public class WordFinderManager : MonoBehaviour
     }
 
     void GenerateValidLetterSet() {
-    string vocales = "AEIOU";
-    string consonantes = "RSTNLMPDBCFGHJK";
-    bool encontrado = false;
-    int intentos = 0;
-    targetCountThisRound = 10; 
+        string vocales = "AEIOU";
+        string consonantes = "RSTNLMPDBCFGHJK";
+        bool encontrado = false;
+        int intentos = 0;
 
-    while (!encontrado && intentos < 2000) {
-        intentos++;
-        
-        List<char> set = vocales.OrderBy(x => Random.value).Take(3).ToList();
-        var resto = consonantes.OrderBy(x => Random.value).Take(4).ToList();
-        set.AddRange(resto);
-        set = set.Distinct().ToList();
+        //intentamos encontrar un mazo que tenga al menos 5 palabras para que el juego sea divertido
+        while (!encontrado && intentos < 2000) {
+            intentos++;
+            
+            List<char> set = vocales.OrderBy(x => Random.value).Take(3).ToList();
+            var resto = consonantes.OrderBy(x => Random.value).Take(4).ToList();
+            set.AddRange(resto);
+            set = set.Distinct().ToList();
 
-        while(set.Count < 7) {
-            char extra = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"[Random.Range(0, 27)];
-            if(!set.Contains(extra)) set.Add(extra);
-        }
-
-        validWordsInRound = dbWords.Where(w => IsWordFormable(w, set)).ToList();
-
-        if (intentos > 1500) targetCountThisRound = 5;
-        else if (intentos > 800) targetCountThisRound = 8;
-
-        if (validWordsInRound.Count >= targetCountThisRound) {
-            encontrado = true;
-            for (int i = 0; i < 7; i++) {
-                letterButtonsText[i].text = set[i].ToString();
+            while(set.Count < 7) {
+                char extra = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"[Random.Range(0, 27)];
+                if(!set.Contains(extra)) set.Add(extra);
             }
 
-           
-            string chuletero = string.Join(", ", validWordsInRound);
-            Debug.Log("<color=cyan><b>¡TRAMPA ACTIVADA! Las palabras son: </b></color>" + chuletero);
-            
-            feedbackText.text = $"¡Encuentra {validWordsInRound.Count} palabras!";
+            //buscamos todas las palabras que coincidan con el mazo generado
+            validWordsInRound = dbWords.Where(w => IsWordFormable(w, set)).ToList();
+
+            //para que no salgan tableros con 1 sola palabra posible.
+            if (validWordsInRound.Count >= 5) { 
+                encontrado = true;
+                for (int i = 0; i < 7; i++) {
+                    letterButtonsText[i].text = set[i].ToString();
+                }
+
+                string chuletero = string.Join(", ", validWordsInRound);
+                Debug.Log($"<color=cyan><b>RONDA GENERADA ({validWordsInRound.Count} palabras):</b></color> {chuletero}");
+                
+                feedbackText.text = $"¡Encuentra las {validWordsInRound.Count} palabras!";
+            }
         }
     }
-}
 
     bool IsWordFormable(string word, List<char> letters) {
-        if (word.Length < 3) return false; // ignorar palabras de 1 o 2 letras
+        if (word.Length < 3) return false;
         foreach (char c in word) {
             if (!letters.Contains(c)) return false;
         }
         return true;
+    }
+
+    IEnumerator RegresoAutomaticoMenu()
+    {
+        puedeJugar = false;
+        yield return new WaitForSeconds(3.5f);
+        Menu();
     }
 
     string LimpiarCadena(string s) {
@@ -149,59 +151,48 @@ public class WordFinderManager : MonoBehaviour
         currentWordText.text = "Palabra: " + currentInput;
     }
 
-    // funcion para el boton borrar
-public void DeleteLetter() {
-    if (!isGameActive) return; // si ya gano o perdio, no borramos nada
-    
-    if (currentInput.Length > 0) {
-        currentInput = currentInput.Substring(0, currentInput.Length - 1);
-        currentWordText.text = "Escribe: " + currentInput;
+    public void DeleteLetter() {
+        if (!isGameActive) return;
+        if (currentInput.Length > 0) {
+            currentInput = currentInput.Substring(0, currentInput.Length - 1);
+            currentWordText.text = "Escribe: " + currentInput;
+        }
     }
-}
 
-// funcion para el botón reintentar
-public void StartNewGame() {
-    // letenemos cualquier proceso previo
-    isGameActive = false; 
-    
-    // limpiamos listas y variables
-    foundWords.Clear();
-    currentInput = "";
-    
-    // limpiamos la UI
-    foundWordsListText.text = "";
-    currentWordText.text = "Escribe:";
-    feedbackText.text = "¡Busca las palabras!";
-    feedbackText.color = Color.white;
-    timeLeft = 300f; // Reiniciamos el reloj
-    
-    // generamos el nuevo set de letras y activamos
-    GenerateValidLetterSet();
-    isGameActive = true;
-    
-    Debug.Log("<color=green>Juego Reiniciado</color>");
-}
+    public void StartNewGame() {
+        isGameActive = false; 
+        foundWords.Clear();
+        currentInput = "";
+        foundWordsListText.text = "";
+        currentWordText.text = "Escribe:";
+        feedbackText.text = "¡Busca las palabras!";
+        feedbackText.color = Color.white;
+        timeLeft = 300f; 
+        
+        GenerateValidLetterSet();
+        isGameActive = true;
+        Debug.Log("<color=green>Juego Reiniciado</color>");
+    }
 
     public void ConfirmWord() {
-    if (!isGameActive) return;
-    string intento = LimpiarCadena(currentInput);
+        if (!isGameActive) return;
+        string intento = LimpiarCadena(currentInput);
 
-    if (validWordsInRound.Contains(intento) && !foundWords.Contains(intento)) {
-        foundWords.Add(intento);
-        foundWordsListText.text += intento + "  ";
-        
-        // comparamos contra la lista valida
-        feedbackText.text = $"¡Bien! {foundWords.Count}/{validWordsInRound.Count}";
-        feedbackText.color = Color.green;
-        
-        if (foundWords.Count >= validWordsInRound.Count) EndGame(true);
-    } else {
-        feedbackText.text = "No válida";
-        feedbackText.color = Color.red;
+        if (validWordsInRound.Contains(intento) && !foundWords.Contains(intento)) {
+            foundWords.Add(intento);
+            foundWordsListText.text += intento + "  ";
+            
+            feedbackText.text = $"¡Bien! {foundWords.Count}/{validWordsInRound.Count}";
+            feedbackText.color = Color.green;
+            
+            if (foundWords.Count >= validWordsInRound.Count) EndGame(true);
+        } else {
+            feedbackText.text = "No válida";
+            feedbackText.color = Color.red;
+        }
+        currentInput = "";
+        currentWordText.text = "Escribe:";
     }
-    currentInput = "";
-    currentWordText.text = "Escribe:";
-}
 
     void Update() {
         if (!isGameActive) return;
@@ -215,18 +206,12 @@ public void StartNewGame() {
         isGameActive = false;
         feedbackText.text = success ? "¡GANASTE!" : "TIEMPO AGOTADO";
         feedbackText.color = success ? Color.green : Color.red;
+        StartCoroutine(RegresoAutomaticoMenu());
     }
-    public void Menu()
-    {
-        int edad = HistorialManager.ObtenerEdadGuardada();
 
-        if (edad == 1)
-        {
-            SceneManager.LoadScene("Levels_2_4");
-        }
-        else
-        {
-            SceneManager.LoadScene("04_Levels_5_7");
-        }
+    public void Menu() {
+        int edad = HistorialManager.ObtenerEdadGuardada();
+        if (edad == 1) SceneManager.LoadScene("Levels_2_4");
+        else SceneManager.LoadScene("04_Levels_5_7");
     }
 }

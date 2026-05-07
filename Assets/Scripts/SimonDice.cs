@@ -3,55 +3,72 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class SimonDice : MonoBehaviour
 {
     [Header("UI Elements")]
-    public Image panelVisualizador; //el cuadro grande central
-    public Button[] botonesColores; //los 4 botones de abajo
+    public Image panelVisualizador; 
+    public Button[] botonesColores; 
+    public TextMeshProUGUI textoMensaje; 
+    public TextMeshProUGUI textoNivel;   
 
     [Header("Configuración")]
-    public Color[] coloresSecuencia; //0 = Rojo, 1 = Amarillo, 2 = Verde, 3 = Azul
+    public Color[] coloresSecuencia; 
+    public float tiempoMuestra = 0.7f;
+    public float tiempoEspera = 0.3f;
     
     private List<int> secuenciaMaestra = new List<int>();
-    private int limiteActual = 1; //cuántos pasos de la secuencia mostramos
-    private int indiceUsuario = 0; //por qué color va el niño presionando
+    private int limiteActual = 1; 
+    private int indiceUsuario = 0; 
     private bool puedeJugar = false;
 
     void Start()
     {
+        if (textoMensaje == null || textoNivel == null) return;
         PrepararJuego();
     }
 
     void PrepararJuego()
     {
         secuenciaMaestra.Clear();
-        //se genera la secuencia completa de 5 pasos desde el inicio
         for (int i = 0; i < 5; i++)
         {
-            secuenciaMaestra.Add(Random.Range(0, 4));
+            secuenciaMaestra.Add(Random.Range(0, botonesColores.Length));
         }
         limiteActual = 1;
+        ActualizarUI();
         StartCoroutine(ReproducirSecuencia());
+    }
+
+    void ActualizarUI()
+    {
+        if(textoNivel != null)
+            textoNivel.text = "Nivel " + limiteActual + "/5";
     }
 
     IEnumerator ReproducirSecuencia()
     {
         puedeJugar = false;
         indiceUsuario = 0;
-        panelVisualizador.color = Color.white; //estado neutro
+        
+        textoMensaje.color = Color.black; 
+        textoMensaje.text = "Memoriza la secuencia...";
+        
+        panelVisualizador.color = Color.white; 
         yield return new WaitForSeconds(1f);
 
         for (int i = 0; i < limiteActual; i++)
         {
-            //mostrar el color que corresponde en la lista
             panelVisualizador.color = coloresSecuencia[secuenciaMaestra[i]];
-            yield return new WaitForSeconds(0.7f);
+            yield return new WaitForSeconds(tiempoMuestra);
             panelVisualizador.color = Color.white;
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(tiempoEspera);
         }
 
-        panelVisualizador.color = new Color(1, 1, 1, 0.5f); //color gris/tenue: "Tu turno"
+        textoMensaje.color = new Color(0.2f, 0.2f, 0.2f, 1f); //gris oscuro
+        textoMensaje.text = "¡Tu turno!";
+        panelVisualizador.color = new Color(1, 1, 1, 0.5f); 
         puedeJugar = true;
     }
 
@@ -59,28 +76,29 @@ public class SimonDice : MonoBehaviour
     {
         if (!puedeJugar) return;
 
-        //comprobar si el botón que tocó es el que sigue en la lista
         if (idBoton == secuenciaMaestra[indiceUsuario])
         {
             indiceUsuario++;
-            
-            //si terminó la secuencia actual
             if (indiceUsuario >= limiteActual)
             {
                 if (limiteActual < 5)
                 {
                     limiteActual++;
+                    ActualizarUI();
+                    textoMensaje.color = Color.green; // VERDE
+                    textoMensaje.text = "¡Excelente!";
                     StartCoroutine(ReproducirSecuencia());
                 }
                 else
                 {
-                    Debug.Log("¡Ganaste el nivel!");
+                    textoMensaje.color = Color.green;
+                    textoMensaje.text = "¡Juego Terminado! \n Lo lograste";
+                    StartCoroutine(RegresoAutomaticoMenu());
                 }
             }
         }
         else
         {
-            //error: el niño debe repetir la secuencia que llevaba
             StartCoroutine(FeedbackError());
         }
     }
@@ -88,26 +106,34 @@ public class SimonDice : MonoBehaviour
     IEnumerator FeedbackError()
     {
         puedeJugar = false;
-        panelVisualizador.color = Color.black; //o un texto que diga "Reintentar"
-        Debug.Log("Error: Repitiendo secuencia...");
-        yield return new WaitForSeconds(1f);
+        textoMensaje.color = Color.red; //rojo
+        textoMensaje.text = "Intenta de nuevo \n Repitiendo...";
+        panelVisualizador.color = new Color(1, 0, 0, 0.3f); 
+        yield return new WaitForSeconds(1.5f);
         StartCoroutine(ReproducirSecuencia());
+    }
+
+    IEnumerator RegresoAutomaticoMenu()
+    {
+        puedeJugar = false;
+        yield return new WaitForSeconds(3.5f);
+        Menu();
     }
 
     public void BotonReintentar()
     {
         StopAllCoroutines();
-        limiteActual = 1; //reinicia el progreso pero mantiene la misma secuenciaMaestra
+        limiteActual = 1; 
+        ActualizarUI();
         StartCoroutine(ReproducirSecuencia());
     }
+
     public void Menu()
     {
-        // Llamamos a la función que creamos en el Manager
         int edad = HistorialManager.ObtenerEdadGuardada();
-
-        if (edad == 1) // 1 = Rango 2-4 años
+        if (edad == 1) 
             SceneManager.LoadScene("Levels_2_4");
-        else // 2 = Rango 5-7 años
+        else   
             SceneManager.LoadScene("04_Levels_5_7");
     }
 }
