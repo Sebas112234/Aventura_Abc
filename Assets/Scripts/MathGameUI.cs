@@ -37,6 +37,15 @@ public class MathGameUI : MonoBehaviour
     int b;
     int result;
     bool isAddition;
+    private int aciertos = 0;
+    private int errores = 0;
+    private int rondasExitosas = 0;
+    private int rondasFallidas = 0;
+
+    private bool rondaConError = false;
+    private bool respuestaBloqueada = false;
+
+    private const string NOMBRE_JUEGO = "Sumas y Restas";
 
     void Start()
     {
@@ -48,8 +57,12 @@ public class MathGameUI : MonoBehaviour
     {
         ClearObjects();
         feedbackText.text = "";
+        rondaConError = false;
+        respuestaBloqueada = false;
+        btnNext.gameObject.SetActive(false);
 
         int max = 5;
+
 
         if (level == MathLevel.Medium) max = 10;
         if (level == MathLevel.Hard) max = 20;
@@ -120,14 +133,44 @@ public class MathGameUI : MonoBehaviour
 
     void CheckAnswer(int answer)
     {
+        if (respuestaBloqueada) return;
+
         if (answer == result)
         {
+            respuestaBloqueada = true;
+
+            aciertos++;
+
+            if (rondaConError)
+                rondasFallidas++;
+            else
+                rondasExitosas++;
+
+            HistorialManager.GuardarOActualizarProgreso(
+                NOMBRE_JUEGO,
+                aciertos,
+                errores,
+                rondasExitosas,
+                rondasFallidas
+            );
+
             feedbackText.text = "¡Muy bien!";
             feedbackText.color = Color.green;
             btnNext.gameObject.SetActive(true);
         }
         else
         {
+            errores++;
+            rondaConError = true;
+
+            HistorialManager.GuardarOActualizarProgreso(
+                NOMBRE_JUEGO,
+                aciertos,
+                errores,
+                rondasExitosas,
+                rondasFallidas
+            );
+
             feedbackText.text = "Inténtalo de nuevo";
             feedbackText.color = Color.red;
         }

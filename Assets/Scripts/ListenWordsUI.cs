@@ -25,6 +25,16 @@ public class ListenWordsUI : MonoBehaviour
     private int currentRound = 0;
     private WordEntry correctWord;
 
+    private int aciertos = 0;
+    private int errores = 0;
+    private int rondasExitosas = 0;
+    private int rondasFallidas = 0;
+
+    private bool rondaConError = false;
+    private bool respuestaBloqueada = false;
+
+    private const string NOMBRE_JUEGO = "Escuchar Palabras";
+
     private void Start()
     {
         feedbackText.text = "Inicializando Firebase...";
@@ -82,6 +92,9 @@ public class ListenWordsUI : MonoBehaviour
 
     void NextRound()
     {
+        rondaConError = false;
+        respuestaBloqueada = false;
+
         currentRound++;
 
         if (currentRound > maxRounds)
@@ -150,13 +163,43 @@ public class ListenWordsUI : MonoBehaviour
 
     void CheckAnswer(WordEntry answer)
     {
+        if (respuestaBloqueada) return;
+
         if (answer.textoLimpio == correctWord.textoLimpio)
         {
+            respuestaBloqueada = true;
+
+            aciertos++;
+
+            if (rondaConError)
+                rondasFallidas++;
+            else
+                rondasExitosas++;
+
+            HistorialManager.GuardarOActualizarProgreso(
+                NOMBRE_JUEGO,
+                aciertos,
+                errores,
+                rondasExitosas,
+                rondasFallidas
+            );
+
             feedbackText.text = "¡Muy bien!";
             Invoke(nameof(NextRound), 1f);
         }
         else
         {
+            errores++;
+            rondaConError = true;
+
+            HistorialManager.GuardarOActualizarProgreso(
+                NOMBRE_JUEGO,
+                aciertos,
+                errores,
+                rondasExitosas,
+                rondasFallidas
+            );
+
             feedbackText.text = "Inténtalo de nuevo";
         }
     }
