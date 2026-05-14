@@ -23,6 +23,10 @@ public class SimonDice : MonoBehaviour
     private int indiceUsuario = 0; 
     private bool puedeJugar = false;
 
+    private int aciertos = 0;
+    private int errores = 0;
+    private string nombreJuego = "Simón Dice";
+
     void Start()
     {
         if (textoMensaje == null || textoNivel == null) return;
@@ -32,6 +36,9 @@ public class SimonDice : MonoBehaviour
     void PrepararJuego()
     {
         secuenciaMaestra.Clear();
+        aciertos = 0;
+        errores = 0;
+
         for (int i = 0; i < 5; i++)
         {
             secuenciaMaestra.Add(Random.Range(0, botonesColores.Length));
@@ -66,7 +73,7 @@ public class SimonDice : MonoBehaviour
             yield return new WaitForSeconds(tiempoEspera);
         }
 
-        textoMensaje.color = new Color(0.2f, 0.2f, 0.2f, 1f); //gris oscuro
+        textoMensaje.color = new Color(0.2f, 0.2f, 0.2f, 1f); 
         textoMensaje.text = "¡Tu turno!";
         panelVisualizador.color = new Color(1, 1, 1, 0.5f); 
         puedeJugar = true;
@@ -78,6 +85,7 @@ public class SimonDice : MonoBehaviour
 
         if (idBoton == secuenciaMaestra[indiceUsuario])
         {
+            aciertos++; 
             indiceUsuario++;
             if (indiceUsuario >= limiteActual)
             {
@@ -85,7 +93,7 @@ public class SimonDice : MonoBehaviour
                 {
                     limiteActual++;
                     ActualizarUI();
-                    textoMensaje.color = Color.green; // VERDE
+                    textoMensaje.color = Color.green; 
                     textoMensaje.text = "¡Excelente!";
                     StartCoroutine(ReproducirSecuencia());
                 }
@@ -99,6 +107,7 @@ public class SimonDice : MonoBehaviour
         }
         else
         {
+            errores++; 
             StartCoroutine(FeedbackError());
         }
     }
@@ -106,7 +115,7 @@ public class SimonDice : MonoBehaviour
     IEnumerator FeedbackError()
     {
         puedeJugar = false;
-        textoMensaje.color = Color.red; //rojo
+        textoMensaje.color = Color.red; 
         textoMensaje.text = "Intenta de nuevo \n Repitiendo...";
         panelVisualizador.color = new Color(1, 0, 0, 0.3f); 
         yield return new WaitForSeconds(1.5f);
@@ -123,6 +132,8 @@ public class SimonDice : MonoBehaviour
     public void BotonReintentar()
     {
         StopAllCoroutines();
+        aciertos = 0;
+        errores = 0;
         limiteActual = 1; 
         ActualizarUI();
         StartCoroutine(ReproducirSecuencia());
@@ -130,9 +141,17 @@ public class SimonDice : MonoBehaviour
 
     public void Menu()
     {
+        int rExito = (aciertos > errores) ? 1 : 0;
+        int rFalla = (aciertos > errores) ? 0 : 1;
+
+        if (aciertos > 0 || errores > 0)
+        {
+            HistorialManager.GuardarOActualizarProgreso(nombreJuego, aciertos, errores, rExito, rFalla);
+        }
+
         int edad = HistorialManager.ObtenerEdadGuardada();
         if (edad == 1) 
-            SceneManager.LoadScene("Levels_2_4");
+            SceneManager.LoadScene("03_Levels_2_4");
         else   
             SceneManager.LoadScene("04_Levels_5_7");
     }

@@ -41,6 +41,9 @@ public class WordGameManager : MonoBehaviour {
     private const int MAX_WORDS_PER_ROUND = 10;
     private string currentPlacedSyllable = ""; 
     private DraggableSyllable activeDraggedObject;
+    private int aciertos = 0;
+    private int errores = 0;
+    private string nombreJuego = "Formar Palabras";
 
     void Start() {
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
@@ -48,6 +51,10 @@ public class WordGameManager : MonoBehaviour {
                 db = FirebaseFirestore.DefaultInstance;
                 completedPanel.SetActive(false);
                 feedbackText.text = "Cargando palabras...";
+                
+                aciertos = 0;
+                errores = 0;
+
                 FetchWordsFromFirestore();
             } else {
                 feedbackText.text = "Error Firebase";
@@ -94,6 +101,7 @@ public class WordGameManager : MonoBehaviour {
         if (wordsPlayed >= MAX_WORDS_PER_ROUND) {
             completedPanel.SetActive(true);
             StartCoroutine(RegresoAutomaticoMenu());
+            return;
         }
 
         currentPlacedSyllable = "";
@@ -111,7 +119,6 @@ public class WordGameManager : MonoBehaviour {
             go.GetComponent<SyllableSlot>().Setup(i == missingIndex ? "-" : targetWord.silabas[i], i == missingIndex);
         }
 
-        //generar opciones (Correcta + 2 aleatorias)
         List<string> options = new List<string> { missingSyllable };
         while(options.Count < 3) {
             string randomSil = allWords[UnityEngine.Random.Range(0, allWords.Count)].silabas[0];
@@ -131,7 +138,6 @@ public class WordGameManager : MonoBehaviour {
     }
 
     public void OnSyllableDropped(string value, DraggableSyllable draggedScript) {
-        //si ya había una, regresamos la anterior abajo
         if (activeDraggedObject != null) {
             activeDraggedObject.gameObject.SetActive(true);
             activeDraggedObject.ReturnToStart();
@@ -144,7 +150,7 @@ public class WordGameManager : MonoBehaviour {
             var slot = child.GetComponent<SyllableSlot>();
             if (slot != null && slot.isPlaceholder) {
                 slot.textMesh.text = value;
-                slot.textMesh.color = new Color(0.2f, 0.5f, 1f); //azul
+                slot.textMesh.color = new Color(0.2f, 0.5f, 1f); 
             }
         }
 
@@ -159,13 +165,15 @@ public class WordGameManager : MonoBehaviour {
         }
 
         if (currentPlacedSyllable == missingSyllable) {
+            aciertos++;
             feedbackText.text = "¡Muy bien!";
             feedbackText.color = Color.green;
             Invoke("StartNewRound", 1.2f);
         } else {
+            errores++;
             feedbackText.text = "Casi, intenta de nuevo";
             feedbackText.color = Color.red;
-            ResetPlaceholder(); //regresa la sílaba abajo
+            ResetPlaceholder(); 
         }
     }
 
@@ -195,7 +203,13 @@ public class WordGameManager : MonoBehaviour {
     public void SkipWord() => StartNewRound();
     
     public void Menu() {
+        if (aciertos > 0 || errores > 0) {
+            int rExito = (aciertos > errores) ? 1 : 0;
+            int rFalla = (aciertos > errores) ? 0 : 1;
+            HistorialManager.GuardarOActualizarProgreso(nombreJuego, aciertos, errores, rExito, rFalla);
+        }
+
         int edad = HistorialManager.ObtenerEdadGuardada();
-        SceneManager.LoadScene(edad == 1 ? "Levels_2_4" : "04_Levels_5_7");
+        SceneManager.LoadScene(edad == 1 ? "03_Levels_2_4" : "04_Levels_5_7");
     }
 }

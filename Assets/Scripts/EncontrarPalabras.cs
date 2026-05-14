@@ -26,9 +26,11 @@ public class WordFinderManager : MonoBehaviour
     private string currentInput = "";
     private float timeLeft = 300f; 
     private bool isGameActive = false;
+    private int aciertos = 0;
+    private int errores = 0;
+    private string nombreJuego = "Encontrar Palabras";
 
     void Start() {
-        Debug.Log("<color=yellow>1. Iniciando Juego...</color>");
         feedbackText.text = "Conectando...";
         
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
@@ -44,39 +46,27 @@ public class WordFinderManager : MonoBehaviour
         FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
        
         db.Collection("diccionario").Document("maestro").GetSnapshotAsync().ContinueWithOnMainThread(task => {
-            if (task.IsFaulted) {
-                Debug.LogError("Error Firebase: " + task.Exception);
-                return;
-            }
+            if (task.IsFaulted) return;
 
             DocumentSnapshot snapshot = task.Result;
             if (snapshot.Exists) {
                 dbWords.Clear();
                 ExplorarDiccionario(snapshot.ToDictionary());
-                
-                Debug.Log("<color=cyan>TOTAL PALABRAS CARGADAS: </color>" + dbWords.Count);
-                
                 if (dbWords.Count > 0) StartNewGame();
-                else feedbackText.text = "BD vacía o mal estructurada";
+                else feedbackText.text = "BD vacía";
             }
         });
     }
 
     void ExplorarDiccionario(IDictionary<string, object> nodo) {
         foreach (var entrada in nodo) {
-            if (entrada.Value is IDictionary<string, object> subNodo) {
-                ExplorarDiccionario(subNodo);
-            } 
+            if (entrada.Value is IDictionary<string, object> subNodo) ExplorarDiccionario(subNodo);
             else if (entrada.Value is List<object> lista) {
                 foreach (var item in lista) {
                     if (item is IDictionary<string, object> datosPalabra) {
-                        string p = "";
-                        if (datosPalabra.ContainsKey("texto_limpio")) p = datosPalabra["texto_limpio"].ToString();
-                        else if (datosPalabra.ContainsKey("texto")) p = datosPalabra["texto"].ToString();
-
-                        if (!string.IsNullOrEmpty(p)) {
-                            dbWords.Add(LimpiarCadena(p));
-                        }
+                        string p = datosPalabra.ContainsKey("texto_limpio") ? datosPalabra["texto_limpio"].ToString() : 
+                                  (datosPalabra.ContainsKey("texto") ? datosPalabra["texto"].ToString() : "");
+                        if (!string.IsNullOrEmpty(p)) dbWords.Add(LimpiarCadena(p));
                     }
                 }
             }
@@ -89,10 +79,8 @@ public class WordFinderManager : MonoBehaviour
         bool encontrado = false;
         int intentos = 0;
 
-        //intentamos encontrar un mazo que tenga al menos 5 palabras para que el juego sea divertido
         while (!encontrado && intentos < 2000) {
             intentos++;
-            
             List<char> set = vocales.OrderBy(x => Random.value).Take(3).ToList();
             var resto = consonantes.OrderBy(x => Random.value).Take(4).ToList();
             set.AddRange(resto);
@@ -103,19 +91,11 @@ public class WordFinderManager : MonoBehaviour
                 if(!set.Contains(extra)) set.Add(extra);
             }
 
-            //buscamos todas las palabras que coincidan con el mazo generado
             validWordsInRound = dbWords.Where(w => IsWordFormable(w, set)).ToList();
 
-            //para que no salgan tableros con 1 sola palabra posible.
             if (validWordsInRound.Count >= 5) { 
                 encontrado = true;
-                for (int i = 0; i < 7; i++) {
-                    letterButtonsText[i].text = set[i].ToString();
-                }
-
-                string chuletero = string.Join(", ", validWordsInRound);
-                Debug.Log($"<color=cyan><b>RONDA GENERADA ({validWordsInRound.Count} palabras):</b></color> {chuletero}");
-                
+                for (int i = 0; i < 7; i++) letterButtonsText[i].text = set[i].ToString();
                 feedbackText.text = $"¡Encuentra las {validWordsInRound.Count} palabras!";
             }
         }
@@ -123,14 +103,11 @@ public class WordFinderManager : MonoBehaviour
 
     bool IsWordFormable(string word, List<char> letters) {
         if (word.Length < 3) return false;
-        foreach (char c in word) {
-            if (!letters.Contains(c)) return false;
-        }
+        foreach (char c in word) if (!letters.Contains(c)) return false;
         return true;
     }
 
-    System.Collections.IEnumerator RegresoAutomaticoMenu()
-    {
+    System.Collections.IEnumerator RegresoAutomaticoMenu() {
         yield return new WaitForSeconds(3.5f);
         Menu();
     }
@@ -161,6 +138,9 @@ public class WordFinderManager : MonoBehaviour
     public void StartNewGame() {
         isGameActive = false; 
         foundWords.Clear();
+        aciertos = 0;
+        errores = 0;
+
         currentInput = "";
         foundWordsListText.text = "";
         currentWordText.text = "Escribe:";
@@ -170,22 +150,22 @@ public class WordFinderManager : MonoBehaviour
         
         GenerateValidLetterSet();
         isGameActive = true;
-        Debug.Log("<color=green>Juego Reiniciado</color>");
     }
 
     public void ConfirmWord() {
-        if (!isGameActive) return;
+        if (!isGameActive || string.IsNullOrEmpty(currentInput)) return;
         string intento = LimpiarCadena(currentInput);
 
         if (validWordsInRound.Contains(intento) && !foundWords.Contains(intento)) {
+            aciertos++;
             foundWords.Add(intento);
             foundWordsListText.text += intento + "  ";
-            
             feedbackText.text = $"¡Bien! {foundWords.Count}/{validWordsInRound.Count}";
             feedbackText.color = Color.green;
             
             if (foundWords.Count >= validWordsInRound.Count) EndGame(true);
         } else {
+            errores++;
             feedbackText.text = "No válida";
             feedbackText.color = Color.red;
         }
@@ -209,8 +189,14 @@ public class WordFinderManager : MonoBehaviour
     }
 
     public void Menu() {
+        if (aciertos > 0 || errores > 0) {
+            int rExito = (aciertos > errores) ? 1 : 0;
+            int rFalla = (aciertos > errores) ? 0 : 1;
+            HistorialManager.GuardarOActualizarProgreso(nombreJuego, aciertos, errores, rExito, rFalla);
+        }
+
         int edad = HistorialManager.ObtenerEdadGuardada();
-        if (edad == 1) SceneManager.LoadScene("Levels_2_4");
+        if (edad == 1) SceneManager.LoadScene("03_Levels_2_4");
         else SceneManager.LoadScene("04_Levels_5_7");
     }
 }
