@@ -71,9 +71,10 @@ public class MemoryGame : MonoBehaviour
 
         if (firstSelected == null)
             firstSelected = card;
-        else
+        else{
             secondSelected = card;
             StartCoroutine(CheckMatch());
+        }
     }
 
     IEnumerator CheckMatch()
@@ -135,7 +136,7 @@ public class MemoryGame : MonoBehaviour
     {
         int edad = HistorialManager.ObtenerEdadGuardada();
         if (edad == 1) 
-            SceneManager.LoadScene("Levels_2_4");
+            SceneManager.LoadScene("03_Levels_2_4");
         else   
             SceneManager.LoadScene("04_Levels_5_7");
     }
