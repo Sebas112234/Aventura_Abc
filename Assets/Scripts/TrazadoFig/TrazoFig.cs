@@ -249,19 +249,16 @@ public class TrazoFig : MonoBehaviour
         mostrandoReintento = true;
         isTracing = false;
 
-        ManagerFig manager = FindObjectOfType<ManagerFig>();
-
         MensajeReintentar.transform.SetAsLastSibling();
         currentLine.sortingOrder = -10;
         MensajeReintentar.gameObject.SetActive(true);
         fallos++;
 
         yield return new WaitForSeconds(1.8f);
-
         MensajeReintentar.gameObject.SetActive(false);
 
-        if (manager != null)
-            manager.ReintentarFig();
+        if (managerFig != null)
+            managerFig.ReintentarFig();
         else
             ReintentarTrazo();
 
@@ -384,10 +381,17 @@ public class TrazoFig : MonoBehaviour
         MensajeFallo.transform.SetAsLastSibling();
         MensajeFallo.SetActive(true);
 
-        yield return new WaitForSeconds(1.8f);
+        if (managerFig != null)
+        {
+            // Enviamos el nombre del juego, los aciertos y errores actuales, 
+            // 0 rondas exitosas y 1 ronda fallida para que el % baje.
+            managerFig.RegistrarError();
+        }
 
+        yield return new WaitForSeconds(1.8f);
         MensajeFallo.SetActive(false);
 
+        ReiniciarIntentos();
         managerFig.RegresarPanel();
     }
 

@@ -21,6 +21,9 @@ public class MemoryGame : MonoBehaviour
     private bool isChecking = false;
     private int pairsFound = 0;
     private int totalPairs;
+    private int aciertos = 0;
+    private int errores = 0;
+    private string nombreJuego = "Memorama";
 
     void Start()
     {
@@ -30,11 +33,11 @@ public class MemoryGame : MonoBehaviour
 
     void SetupGame()
     {
-        //limpiamos datos anteriores
         pairsFound = 0;
+        aciertos = 0;
+        errores = 0;
         victoryText.SetActive(false);
         
-        //borramos cartas viejas si existen
         foreach (GameObject card in spawnedCards) Destroy(card);
         spawnedCards.Clear();
 
@@ -88,6 +91,8 @@ public class MemoryGame : MonoBehaviour
 
         if (sprite1 == sprite2)
         {
+            aciertos++; 
+            
             firstSelected.GetComponent<Button>().interactable = false;
             secondSelected.GetComponent<Button>().interactable = false;
             pairsFound++;
@@ -100,6 +105,8 @@ public class MemoryGame : MonoBehaviour
         }
         else
         {
+            errores++; 
+            
             firstSelected.transform.Find("ColorOverlay").gameObject.SetActive(false);
             secondSelected.transform.Find("ColorOverlay").gameObject.SetActive(false);
         }
@@ -134,6 +141,14 @@ public class MemoryGame : MonoBehaviour
 
     public void Menu()
     {
+        if (aciertos > 0 || errores > 0)
+        {
+            int rExito = (aciertos > errores) ? 1 : 0;
+            int rFalla = (aciertos > errores) ? 0 : 1;
+
+            HistorialManager.GuardarOActualizarProgreso(nombreJuego, aciertos, errores, rExito, rFalla);
+        }
+
         int edad = HistorialManager.ObtenerEdadGuardada();
         if (edad == 1) 
             SceneManager.LoadScene("03_Levels_2_4");

@@ -11,7 +11,6 @@ public class ManagerFig : MonoBehaviour
     public GameObject[] figuras;
     public Button[] botonesFiguras;
     public GameObject MensajeCompletado;
-    //public TextMeshProUGUI textoCompletado;
     public GameObject Instruccion;
     public float tiempoMensaje = 1.5f;
     public Color colorCompletado = Color.green;
@@ -19,10 +18,16 @@ public class ManagerFig : MonoBehaviour
     public GameObject botonMenu;
     public GameObject botonMenuPanel;
 
+    // --- VARIABLES DE SEGUIMIENTO ---
+    private int totalAciertos = 0;
+    private int totalErrores = 0;
+    private int rondasExitosas = 0;
+    private int rondasFallidas = 0;
+    private const string NOMBRE_JUEGO = "Trazado de Figuras";
+    // --------------------------------
+
     private bool[] FigurasCompletadas = new bool[7];
-
     private int FiguraActual = -1;
-
 
     void Start()
     {
@@ -31,6 +36,8 @@ public class ManagerFig : MonoBehaviour
 
         if (ContenedorFig != null)
             ContenedorFig.SetActive(false);
+
+        
 
         for (int i = 0; i < figuras.Length; i++)
         {
@@ -43,21 +50,15 @@ public class ManagerFig : MonoBehaviour
     {
         botonMenu.SetActive(false);
         botonMenuPanel.SetActive(true);
-
         FiguraActual = index;
-
         PanelFig.SetActive(false);
         Instruccion.SetActive(false);
         ContenedorFig.SetActive(true);
-
-        Debug.Log("Mostrar letra index: " + index);
-        Debug.Log("Letra: " + figuras[index].name);
 
         for (int i = 0; i < figuras.Length; i++)
         {
             if (figuras[i] != null)
                 figuras[i].SetActive(i == index);
-            Debug.Log("Activando: " + i);
         }
     }
 
@@ -68,21 +69,33 @@ public class ManagerFig : MonoBehaviour
 
         FigurasCompletadas[index] = true;
 
+        // --- GUARDAR Y REPORTAR ---
+        PlayerPrefs.SetInt("FiguraCompletada_" + index, 1);
+        PlayerPrefs.Save();
+
+        totalAciertos++;
+        rondasExitosas++;
+        HistorialManager.GuardarOActualizarProgreso(NOMBRE_JUEGO, totalAciertos, totalErrores, rondasExitosas, rondasFallidas);
+        // -------------------------
+
         if (index < botonesFiguras.Length && botonesFiguras[index] != null)
         {
             Button btn = botonesFiguras[index];
-
             Transform completado = btn.transform.Find("CuadroCompletado");
-
             if (completado != null)
                 completado.gameObject.SetActive(true);
-
             btn.interactable = false;
         }
 
-        Debug.Log("MOSTRANDO TEXTO");
-
         StartCoroutine(MostrarMensajeYRegresar());
+    }
+
+    // Función para que TrazoFig reporte errores
+    public void RegistrarError()
+    {
+        totalErrores++;
+        rondasFallidas++;
+        HistorialManager.GuardarOActualizarProgreso(NOMBRE_JUEGO, totalAciertos, totalErrores, rondasExitosas, rondasFallidas);
     }
 
     private IEnumerator MostrarMensajeYRegresar()
@@ -96,9 +109,7 @@ public class ManagerFig : MonoBehaviour
         yield return new WaitForSeconds(tiempoMensaje);
 
         if (MensajeCompletado != null)
-        {
             MensajeCompletado.gameObject.SetActive(false);
-        }
 
         ContenedorFig.SetActive(false);
         PanelFig.SetActive(true);
@@ -108,9 +119,7 @@ public class ManagerFig : MonoBehaviour
     public void ReintentarFig()
     {
         if (FiguraActual < 0) return;
-
         TrazoFig tf = figuras[FiguraActual].GetComponent<TrazoFig>();
-
         if (tf != null)
             tf.ReintentarTrazo();
     }
@@ -122,20 +131,14 @@ public class ManagerFig : MonoBehaviour
         ContenedorFig.SetActive(false);
         PanelFig.SetActive(true);
         Instruccion.SetActive(true);
-
     }
 
     public void Menu()
     {
         int edad = HistorialManager.ObtenerEdadGuardada();
-
         if (edad == 1)
-        {
             SceneManager.LoadScene("03_Levels_2_4");
-        }
         else
-        {
             SceneManager.LoadScene("04_Levels_5_7");
-        }
     }
 }

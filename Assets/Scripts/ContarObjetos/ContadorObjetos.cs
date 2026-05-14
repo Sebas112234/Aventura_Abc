@@ -126,6 +126,13 @@ public class ContadorObjetos : MonoBehaviour
         }
         else
         {
+            // --- REPORTE DE ERROR ---
+            if (manager != null)
+            {
+                manager.RegistrarFallo();
+            }
+            // ------------------------
+
             MensajeReintentar.SetActive(true);
             manager.StartCoroutine(manager.OcultarMensaje(MensajeReintentar));
         }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
-// ESTA PARTE DEFINE LOS DATOS
 [System.Serializable]
 public class RegistroJuego {
     public string nombreMinijuego;
@@ -25,7 +24,6 @@ public class HistorialGeneral {
     public List<RegistroJuego> listaRegistros = new List<RegistroJuego>();
 }
 
-// ESTA PARTE ES EL MANAGER
 public class HistorialManager : MonoBehaviour {
     private static string PathPersistente => Path.Combine(Application.persistentDataPath, "historial.json");
 
@@ -52,9 +50,7 @@ public class HistorialManager : MonoBehaviour {
         return JsonUtility.FromJson<HistorialGeneral>(File.ReadAllText(PathPersistente));
     }
 
-    // Nueva función para obtener la edad guardada desde cualquier lugar
     public static int ObtenerEdadGuardada() {
-        // Retorna el valor guardado, o 0 si aún no se ha seleccionado nada
         return PlayerPrefs.GetInt("AgeGroup", 0);
     }
     public void Menu()
@@ -63,7 +59,7 @@ public class HistorialManager : MonoBehaviour {
 
         if (edad == 1)
         {
-            SceneManager.LoadScene("Levels_2_4");
+            SceneManager.LoadScene("03_Levels_2_4");
         }
         else
         {
