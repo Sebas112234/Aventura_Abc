@@ -378,6 +378,13 @@ public class ControlTrazo : MonoBehaviour
         MensajeFallo.transform.SetAsLastSibling();
         MensajeFallo.SetActive(true);
 
+        if (managerLetra != null)
+        {
+            // Enviamos el nombre del juego, los aciertos y errores actuales, 
+            // 0 rondas exitosas y 1 ronda fallida para que el % baje.
+            managerLetra.RegistrarError();
+        }
+
         yield return new WaitForSeconds(1.8f);
 
         MensajeFallo.SetActive(false);

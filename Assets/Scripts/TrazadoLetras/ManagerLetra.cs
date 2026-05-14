@@ -11,7 +11,6 @@ public class ManagerLetra : MonoBehaviour
     public GameObject[] letras;
     public Button[] botonesLetras;
     public GameObject MensajeCompletado;
-    //public TextMeshProUGUI textoCompletado;
     public GameObject Instruccion;
     public float tiempoMensaje = 1.5f;
     public Color colorCompletado = Color.green;
@@ -19,11 +18,14 @@ public class ManagerLetra : MonoBehaviour
     public GameObject botonMenu;
     public GameObject botonMenuPanel;
 
+    // --- VARIABLES NUEVAS PARA EL HISTORIAL ---
+    private int totalAciertos = 0;
+    private int totalErrores = 0;
+    private const string NOMBRE_JUEGO = "Alfabeto Trazado"; // Cambia esto al nombre real de tu juego
+    // ------------------------------------------
 
     private bool[] letrasCompletadas = new bool[26];
-
     private int letraActual = -1;
-
 
     void Start()
     {
@@ -50,14 +52,10 @@ public class ManagerLetra : MonoBehaviour
         Instruccion.SetActive(false);
         contenedorLet.SetActive(true);
 
-        Debug.Log("Mostrar letra index: " + index);
-        Debug.Log("Letra: " + letras[index].name);
-
         for (int i = 0; i < letras.Length; i++)
         {
             if (letras[i] != null)
                 letras[i].SetActive(i == index);
-            Debug.Log("Activando: " + i);
         }
     }
 
@@ -68,10 +66,15 @@ public class ManagerLetra : MonoBehaviour
 
         letrasCompletadas[index] = true;
 
+        // --- LÓGICA DE HISTORIAL ---
+        totalAciertos++;
+        // Se envía: Nombre, aciertos, errores, rondasExitosas (1), rondasFallidas (0)
+        HistorialManager.GuardarOActualizarProgreso(NOMBRE_JUEGO, totalAciertos, totalErrores, 1, 0);
+        // ---------------------------
+
         if (index < botonesLetras.Length && botonesLetras[index] != null)
         {
             Button btn = botonesLetras[index];
-
             Transform completado = btn.transform.Find("CuadroCompletado");
 
             if (completado != null)
@@ -80,9 +83,14 @@ public class ManagerLetra : MonoBehaviour
             btn.interactable = false;
         }
 
-        Debug.Log("MOSTRANDO TEXTO");
-
         StartCoroutine(MostrarMensajeYRegresar());
+    }
+
+    // NUEVA FUNCIÓN: Llama a esto desde ControlTrazo cuando el usuario cometa un error
+    public void RegistrarError()
+    {
+        totalErrores++;
+        HistorialManager.GuardarOActualizarProgreso(NOMBRE_JUEGO, totalAciertos, totalErrores, 0, 1);
     }
 
     private IEnumerator MostrarMensajeYRegresar()
@@ -110,7 +118,6 @@ public class ManagerLetra : MonoBehaviour
         if (letraActual < 0) return;
 
         ControlTrazo ct = letras[letraActual].GetComponent<ControlTrazo>();
-
         if (ct != null)
             ct.ReintentarTrazo();
     }
@@ -122,14 +129,11 @@ public class ManagerLetra : MonoBehaviour
         contenedorLet.SetActive(false);
         panelAlfabeto.SetActive(true);
         Instruccion.SetActive(true);
-
     }
 
     public void Menu()
     {
-        Debug.Log("Click Menu ");
         int edad = HistorialManager.ObtenerEdadGuardada();
-
         if (edad == 1)
         {
             SceneManager.LoadScene("03_Levels_2_4");
