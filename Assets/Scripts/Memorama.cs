@@ -71,9 +71,10 @@ public class MemoryGame : MonoBehaviour
 
         if (firstSelected == null)
             firstSelected = card;
-        else
+        else{
             secondSelected = card;
             StartCoroutine(CheckMatch());
+        }
     }
 
     IEnumerator CheckMatch()
