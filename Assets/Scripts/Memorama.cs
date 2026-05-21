@@ -25,8 +25,18 @@ public class MemoryGame : MonoBehaviour
     private int errores = 0;
     private string nombreJuego = "Memorama";
 
+    //CP1: Lista de persistencia temporal para recordar el orden de la ronda anterior
+    private List<Sprite> secuenciaAnterior = new List<Sprite>();
+
     void Start()
     {
+        //CP4: Cláusula de seguridad matemática para prevenir errores de asignación impar en Unity
+        if (cardSprites != null && cardSprites.Count % 2 != 0)
+        {
+            Debug.LogWarning("Se detectó un número impar de Sprites en Memorama. Removiendo el elemento huérfano.");
+            cardSprites.RemoveAt(cardSprites.Count - 1); // Trunca el elemento sobrante para mantener pares perfectos
+        }
+
         totalPairs = cardSprites.Count / 2;
         SetupGame();
     }
@@ -128,15 +138,44 @@ public class MemoryGame : MonoBehaviour
         SetupGame();
     }
 
+    //CP1: Algoritmo mejorado con guardián de coincidencia histórica secuencial externa
     void Shuffle(List<Sprite> list)
     {
-        for (int i = 0; i < list.Count; i++)
+        if (list.Count <= 1) return;
+
+        bool esIdenticaALaAnterior = false;
+        int intentosDeSeguridad = 0;
+
+        do
         {
-            Sprite temp = list[i];
-            int randomIndex = Random.Range(i, list.Count);
-            list[i] = list[randomIndex];
-            list[randomIndex] = temp;
-        }
+            for (int i = 0; i < list.Count; i++)
+            {
+                Sprite temp = list[i];
+                int randomIndex = Random.Range(i, list.Count);
+                list[i] = list[randomIndex];
+                list[randomIndex] = temp;
+            }
+
+            //si hay un historial guardado, verificamos que la nueva lista no sea idéntica
+            if (secuenciaAnterior.Count == list.Count)
+            {
+                esIdenticaALaAnterior = true;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i] != secuenciaAnterior[i])
+                    {
+                        esIdenticaALaAnterior = false; //se rompe la igualdad total, es un mazo válido
+                        break;
+                    }
+                }
+            }
+            
+            intentosDeSeguridad++;
+            
+        } while (esIdenticaALaAnterior && intentosDeSeguridad < 10); //reejecuta si es idéntica (máximo 10 intentos preventivos)
+
+        //actualizamos la secuencia anterior reflejando el orden actual para la próxima partida
+        secuenciaAnterior = new List<Sprite>(list);
     }
 
     public void Menu()

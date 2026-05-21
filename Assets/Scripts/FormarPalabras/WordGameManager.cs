@@ -33,6 +33,9 @@ public class WordGameManager : MonoBehaviour {
     public TextMeshProUGUI roundCounterText;
     public GameObject completedPanel;
 
+    [Header("Configuración de Audio")]
+    public AndroidTTS ttsManager; 
+
     private FirebaseFirestore db;
     private List<WordData> allWords = new List<WordData>();
     private WordData targetWord;
@@ -46,6 +49,10 @@ public class WordGameManager : MonoBehaviour {
     private string nombreJuego = "Formar Palabras";
 
     void Start() {
+        if (ttsManager == null) {
+            ttsManager = FindObjectOfType<AndroidTTS>();
+        }
+
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
             if (task.Result == Firebase.DependencyStatus.Available) {
                 db = FirebaseFirestore.DefaultInstance;
@@ -98,12 +105,6 @@ public class WordGameManager : MonoBehaviour {
     }
 
     public void StartNewRound() {
-        if (wordsPlayed >= MAX_WORDS_PER_ROUND) {
-            completedPanel.SetActive(true);
-            StartCoroutine(RegresoAutomaticoMenu());
-            return;
-        }
-
         currentPlacedSyllable = "";
         activeDraggedObject = null;
 
@@ -131,8 +132,7 @@ public class WordGameManager : MonoBehaviour {
             go.GetComponent<DraggableSyllable>().Init(s, this);
         }
 
-        wordsPlayed++;
-        roundCounterText.text = $"Palabra {wordsPlayed}/{MAX_WORDS_PER_ROUND}";
+        roundCounterText.text = $"Palabra {wordsPlayed + 1}/{MAX_WORDS_PER_ROUND}";
         feedbackText.text = "Arrastra la sílaba faltante";
         feedbackText.color = Color.white;
     }
@@ -166,9 +166,21 @@ public class WordGameManager : MonoBehaviour {
 
         if (currentPlacedSyllable == missingSyllable) {
             aciertos++;
+            wordsPlayed++;
+
             feedbackText.text = "¡Muy bien!";
             feedbackText.color = Color.green;
-            Invoke("StartNewRound", 1.2f);
+            
+            if (ttsManager != null) {
+                ttsManager.Speak(targetWord.texto); 
+            }
+
+            if (wordsPlayed >= MAX_WORDS_PER_ROUND) {
+                completedPanel.SetActive(true);
+                StartCoroutine(RegresoAutomaticoMenu());
+            } else {
+                Invoke("StartNewRound", 1.2f);
+            }
         } else {
             errores++;
             feedbackText.text = "Casi, intenta de nuevo";

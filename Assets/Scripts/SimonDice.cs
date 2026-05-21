@@ -27,6 +27,8 @@ public class SimonDice : MonoBehaviour
     private int errores = 0;
     private string nombreJuego = "Simón Dice";
 
+    private int maxNivelesRonda = 5; 
+
     void Start()
     {
         if (textoMensaje == null || textoNivel == null) return;
@@ -39,10 +41,31 @@ public class SimonDice : MonoBehaviour
         aciertos = 0;
         errores = 0;
 
-        for (int i = 0; i < 5; i++)
+        //CP3: Ajuste adaptativo de dificultad según la edad recuperada del HistorialManager
+        int edadUsuario = HistorialManager.ObtenerEdadGuardada();
+        if (edadUsuario >= 5 && edadUsuario <= 7)
         {
-            secuenciaMaestra.Add(Random.Range(0, botonesColores.Length));
+            maxNivelesRonda = 7; //aumenta la longitud para niños de 5 a 7 años
         }
+        else
+        {
+            maxNivelesRonda = 5; //configuración estándar de 5 elementos para niños de 2 a 4 años
+        }
+
+        //CP2: Bucle corregido para evitar la generación de colores consecutivos idénticos
+        int ultimoIndice = -1;
+        for (int i = 0; i < maxNivelesRonda; i++)
+        {
+            int nuevoIndice;
+            do
+            {
+                nuevoIndice = Random.Range(0, botonesColores.Length);
+            } while (nuevoIndice == ultimoIndice); //forzar cambio si es igual al anterior
+
+            secuenciaMaestra.Add(nuevoIndice);
+            ultimoIndice = nuevoIndice; //actualizar el registro del último elemento añadido
+        }
+
         limiteActual = 1;
         ActualizarUI();
         StartCoroutine(ReproducirSecuencia());
@@ -51,7 +74,7 @@ public class SimonDice : MonoBehaviour
     void ActualizarUI()
     {
         if(textoNivel != null)
-            textoNivel.text = "Nivel " + limiteActual + "/5";
+            textoNivel.text = "Nivel " + limiteActual + "/" + maxNivelesRonda;
     }
 
     IEnumerator ReproducirSecuencia()
@@ -89,7 +112,8 @@ public class SimonDice : MonoBehaviour
             indiceUsuario++;
             if (indiceUsuario >= limiteActual)
             {
-                if (limiteActual < 5)
+                //CP3: Cambiado el límite "hardcoded" de 5 por la variable dinámica maxNivelesRonda
+                if (limiteActual < maxNivelesRonda)
                 {
                     limiteActual++;
                     ActualizarUI();
