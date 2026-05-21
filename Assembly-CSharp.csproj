@@ -70,6 +70,8 @@
     <Compile Include="Assets\Firebase\FirebaseApp\Internal\HttpHelpers.cs" />
     <Compile Include="Assets\Scripts\FirestoreNestedLoader.cs" />
     <Compile Include="Assets\Scripts\ContarObjetos\ManagerContarObj.cs" />
+    <Compile Include="Assets\Scripts\DraggableOption.cs" />
+    <Compile Include="Assets\Scripts\DropZone.cs" />
     <Compile Include="Assets\Scripts\MathGameUI.cs" />
     <Compile Include="Assets\Scripts\FirebaseInitializer.cs" />
     <Compile Include="Assets\Scripts\TTSInitListener.cs" />

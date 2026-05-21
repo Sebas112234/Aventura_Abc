@@ -17,6 +17,7 @@ public class ManagerLetra : MonoBehaviour
 
     public GameObject botonMenu;
     public GameObject botonMenuPanel;
+    public GameObject botonReintentar;
 
     // --- VARIABLES NUEVAS PARA EL HISTORIAL ---
     private int totalAciertos = 0;
@@ -29,6 +30,7 @@ public class ManagerLetra : MonoBehaviour
 
     void Start()
     {
+    
         if (MensajeCompletado != null)
             MensajeCompletado.gameObject.SetActive(false);
 
@@ -46,6 +48,7 @@ public class ManagerLetra : MonoBehaviour
     {
         botonMenu.SetActive(false);
         botonMenuPanel.SetActive(true);
+        botonReintentar.SetActive(true);
         letraActual = index;
 
         panelAlfabeto.SetActive(false);
@@ -126,6 +129,7 @@ public class ManagerLetra : MonoBehaviour
     {
         botonMenu.SetActive(true);
         botonMenuPanel.SetActive(false);
+        botonReintentar.SetActive(false);
         contenedorLet.SetActive(false);
         panelAlfabeto.SetActive(true);
         Instruccion.SetActive(true);

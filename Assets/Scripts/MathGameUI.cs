@@ -22,7 +22,7 @@ public class MathGameUI : MonoBehaviour
     public Transform groupA;
     public Transform groupB;
 
-    public Button[] optionButtons;
+    public DraggableOption[] optionOptions;
 
     [Header("Prefabs")]
     public GameObject objectPrefab;
@@ -109,9 +109,9 @@ public class MathGameUI : MonoBehaviour
 
     void GenerateOptions()
     {
-        int correctIndex = Random.Range(0, optionButtons.Length);
+        int correctIndex = Random.Range(0, optionOptions.Length);
 
-        for (int i = 0; i < optionButtons.Length; i++)
+        for (int i = 0; i < optionOptions.Length; i++)
         {
             int value;
 
@@ -120,18 +120,26 @@ public class MathGameUI : MonoBehaviour
             else
                 value = result + Random.Range(-3, 4);
 
-            if (value < 0) value = Random.Range(0, 5);
+            if (value < 0)
+                value = Random.Range(0, 5);
 
-            optionButtons[i].GetComponentInChildren<TMP_Text>().text = value.ToString();
+            // Asignar valor al draggable
+            optionOptions[i].value = value;
 
-            int captured = value;
+            // Cambiar texto visible
+            TMP_Text txt = optionOptions[i].GetComponentInChildren<TMP_Text>();
 
-            optionButtons[i].onClick.RemoveAllListeners();
-            optionButtons[i].onClick.AddListener(() => CheckAnswer(captured));
+            if (txt == null)
+            {
+                Debug.LogError("La opción " + optionOptions[i].name + " no tiene TMP_Text hijo.");
+                return;
+            }
+
+            txt.text = value.ToString();
         }
     }
 
-    void CheckAnswer(int answer)
+    public void CheckAnswer(int answer)
     {
         if (respuestaBloqueada) return;
 
