@@ -10,13 +10,12 @@ public class ManagerContarObj : MonoBehaviour
     public int nivelActual = 1;
     int totalNiveles = 10;
 
-    // --- VARIABLES PARA EL HISTORIAL ---
     private int totalAciertos = 0;
     private int totalErrores = 0;
     private int rondasExitosas = 0;
     private int rondasFallidas = 0;
     private const string NOMBRE_JUEGO = "Contar Objetos";
-    // -----------------------------------
+
 
     void Start()
     {
@@ -26,11 +25,9 @@ public class ManagerContarObj : MonoBehaviour
 
     public void NivelCompletado()
     {
-        // --- ACTUALIZAR HISTORIAL POR NIVEL LOGRADO ---
         totalAciertos++;
         rondasExitosas++;
         ActualizarHistorial();
-        // ----------------------------------------------
 
         nivelActual++;
 
@@ -41,13 +38,19 @@ public class ManagerContarObj : MonoBehaviour
         }
         else
         {
-            contador.MensajeJuego.SetActive(true);
-            StartCoroutine(OcultarMensaje(contador.MensajeJuego));
-            SceneManager.LoadScene("03_Levels_2_4");
+            StartCoroutine(FinDelJuego());
         }
     }
 
-    // Función para que el contador reporte cuando el niño se equivoca
+    IEnumerator FinDelJuego()
+    {
+        contador.MensajeJuego.SetActive(true);
+
+        yield return new WaitForSeconds(2.5f);
+
+        SceneManager.LoadScene("03_Levels_2_4");
+    }
+
     public void RegistrarFallo()
     {
         totalErrores++;

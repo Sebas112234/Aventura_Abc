@@ -19,18 +19,19 @@ public class ManagerLetra : MonoBehaviour
     public GameObject botonMenuPanel;
     public GameObject botonReintentar;
 
-    // --- VARIABLES NUEVAS PARA EL HISTORIAL ---
     private int totalAciertos = 0;
     private int totalErrores = 0;
-    private const string NOMBRE_JUEGO = "Alfabeto Trazado"; // Cambia esto al nombre real de tu juego
-    // ------------------------------------------
+    private const string NOMBRE_JUEGO = "Trazado Letras"; 
 
     private bool[] letrasCompletadas = new bool[26];
     private int letraActual = -1;
 
+    public AndroidTTS tts;
+
     void Start()
     {
-    
+        tts = FindObjectOfType<AndroidTTS>();
+
         if (MensajeCompletado != null)
             MensajeCompletado.gameObject.SetActive(false);
 
@@ -49,6 +50,7 @@ public class ManagerLetra : MonoBehaviour
         botonMenu.SetActive(false);
         botonMenuPanel.SetActive(true);
         botonReintentar.SetActive(true);
+
         letraActual = index;
 
         panelAlfabeto.SetActive(false);
@@ -60,6 +62,8 @@ public class ManagerLetra : MonoBehaviour
             if (letras[i] != null)
                 letras[i].SetActive(i == index);
         }
+
+        ReproducirInstruccionLetra(index);
     }
 
     public void CompletarLetra(int index)
@@ -69,11 +73,10 @@ public class ManagerLetra : MonoBehaviour
 
         letrasCompletadas[index] = true;
 
-        // --- LÓGICA DE HISTORIAL ---
+        //historial
         totalAciertos++;
-        // Se envía: Nombre, aciertos, errores, rondasExitosas (1), rondasFallidas (0)
         HistorialManager.GuardarOActualizarProgreso(NOMBRE_JUEGO, totalAciertos, totalErrores, 1, 0);
-        // ---------------------------
+      
 
         if (index < botonesLetras.Length && botonesLetras[index] != null)
         {
@@ -86,10 +89,10 @@ public class ManagerLetra : MonoBehaviour
             btn.interactable = false;
         }
 
+        Hablar("Letra completada, felicidades");
         StartCoroutine(MostrarMensajeYRegresar());
     }
 
-    // NUEVA FUNCIÓN: Llama a esto desde ControlTrazo cuando el usuario cometa un error
     public void RegistrarError()
     {
         totalErrores++;
@@ -123,6 +126,7 @@ public class ManagerLetra : MonoBehaviour
         ControlTrazo ct = letras[letraActual].GetComponent<ControlTrazo>();
         if (ct != null)
             ct.ReintentarTrazo();
+
     }
 
     public void RegresarPanel()
@@ -133,6 +137,52 @@ public class ManagerLetra : MonoBehaviour
         contenedorLet.SetActive(false);
         panelAlfabeto.SetActive(true);
         Instruccion.SetActive(true);
+    }
+
+    void ReproducirInstruccionLetra(int index)
+    {
+#if UNITY_EDITOR
+        Debug.Log("Letra " + (char)('A' + index) + ", sigue la línea de trazo");
+        return;
+#endif
+
+        if (tts == null)
+        {
+            Debug.LogWarning("TTS no asignado");
+            return;
+        }
+
+        if (!tts.IsReady)
+        {
+            Debug.LogWarning("TTS aún no está listo");
+            return;
+        }
+
+        string letra = ((char)('A' + index)).ToString();
+
+        tts.Speak("Letra " + letra + ", sigue la línea de trazo");
+    }
+
+    public void Hablar(string texto)
+    {
+#if UNITY_EDITOR
+        Debug.Log(texto);
+        return;
+#endif
+
+        if (tts == null)
+        {
+            Debug.LogWarning("TTS no asignado");
+            return;
+        }
+
+        if (!tts.IsReady)
+        {
+            Debug.LogWarning("TTS aún no está listo");
+            return;
+        }
+
+        tts.Speak(texto);
     }
 
     public void Menu()

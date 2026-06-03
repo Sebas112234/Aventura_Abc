@@ -16,23 +16,27 @@ public class ContadorObjetos : MonoBehaviour
     public GameObject MensajeJuego;
     public GameObject MensajeReintentar;
 
+    public AndroidTTS tts;
+    bool nivelEnTransicion = false;
 
     int cantidad1;
     int cantidad2;
     int cantidad3;
 
     int respuestaCorrecta;
+    int cantidadCorrecta;
 
     void Start()
     {
         manager = FindObjectOfType<ManagerContarObj>();
+        tts = FindObjectOfType<AndroidTTS>();
     }
 
     void GenerarNivel()
     {
         // Generar tres cantidades distintas entre 1 y 9
         int min = 1;
-        int max = 10; // Random.Range int es inclusive min, exclusive max
+        int max = 10; 
 
         cantidad1 = Random.Range(min, max);
         // asegurar que cantidad2 sea diferente a cantidad1
@@ -45,10 +49,21 @@ public class ContadorObjetos : MonoBehaviour
         GenerarManzanas(Espacio3, cantidad3);
 
         int mayor = Mathf.Max(cantidad1, cantidad2, cantidad3);
-
-        if (cantidad1 == mayor) respuestaCorrecta = 1;
-        else if (cantidad2 == mayor) respuestaCorrecta = 2;
-        else respuestaCorrecta = 3;
+        if (cantidad1 == mayor)
+        {
+            respuestaCorrecta = 1;
+            cantidadCorrecta = cantidad1;
+        }
+        else if (cantidad2 == mayor)
+        {
+            respuestaCorrecta = 2;
+            cantidadCorrecta = cantidad2;
+        }
+        else
+        {
+            respuestaCorrecta = 3;
+            cantidadCorrecta = cantidad3;
+        }
     }
 
     public void GenerarNuevoNivel()
@@ -114,29 +129,64 @@ public class ContadorObjetos : MonoBehaviour
 
     public void Seleccionar(int opcion)
     {
+        if (nivelEnTransicion)  return;
         if (opcion == respuestaCorrecta)
         {
+            nivelEnTransicion = true;
             if (manager.nivelActual < 10)
             {
                 MensajeNivel.SetActive(true);
-                manager.StartCoroutine(manager.OcultarMensaje(MensajeNivel));
             }
 
-            manager.NivelCompletado();
+            StartCoroutine(SiguienteNivelConAudio());
         }
         else
         {
-            // --- REPORTE DE ERROR ---
             if (manager != null)
             {
                 manager.RegistrarFallo();
             }
-            // ------------------------
 
             MensajeReintentar.SetActive(true);
             manager.StartCoroutine(manager.OcultarMensaje(MensajeReintentar));
         }
     }
+
+    IEnumerator SiguienteNivelConAudio()
+    {
+        ReproducirCantidadCorrecta();
+
+        yield return new WaitForSeconds(2.5f);
+
+        MensajeNivel.SetActive(false);
+
+        manager.NivelCompletado();
+
+        nivelEnTransicion = false;
+    }
+
+    void ReproducirCantidadCorrecta()
+    {
+#if UNITY_EDITOR
+        Debug.Log("TTS solo funciona en Android. Número: " + cantidadCorrecta);
+        return;
+#endif
+
+        if (tts == null)
+        {
+            Debug.LogWarning("TTS no asignado");
+            return;
+        }
+
+        if (!tts.IsReady)
+        {
+            Debug.LogWarning("TTS aún no está listo");
+            return;
+        }
+
+        tts.Speak(cantidadCorrecta.ToString());
+    }
+
     public void Menu()
     {
         int edad = HistorialManager.ObtenerEdadGuardada();

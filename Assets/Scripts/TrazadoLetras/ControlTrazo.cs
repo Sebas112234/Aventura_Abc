@@ -119,7 +119,7 @@ public class ControlTrazo : MonoBehaviour
     {
         SampleBoundsWithCollider(bounds, null);
     }
-
+    
     void SampleBoundsWithCollider(Bounds bounds, Collider2D optionalCol)
     {
         Vector2 min = bounds.min;
@@ -215,7 +215,7 @@ public class ControlTrazo : MonoBehaviour
         isTracing = false;
         EvaluateCompletion();
     }
-
+    
     void AddPointToStroke(Vector2 screenPos)
     {
         Vector3 world = mainCam.ScreenToWorldPoint(screenPos);
@@ -261,7 +261,10 @@ public class ControlTrazo : MonoBehaviour
         MensajeReintentar.gameObject.SetActive(false);
 
         if (manager != null)
+        {
+            manager.Hablar("Trata de no salir de la linea, intenta de nuevo");
             manager.ReintentarLetra();
+        }
         else
             ResetTrace();
 
@@ -380,8 +383,7 @@ public class ControlTrazo : MonoBehaviour
 
         if (managerLetra != null)
         {
-            // Enviamos el nombre del juego, los aciertos y errores actuales, 
-            // 0 rondas exitosas y 1 ronda fallida para que el % baje.
+            managerLetra.Hablar("Parece que tienes problemas, trata con otra letra para practicar");
             managerLetra.RegistrarError();
         }
 

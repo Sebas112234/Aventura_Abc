@@ -18,19 +18,22 @@ public class ManagerFig : MonoBehaviour
     public GameObject botonMenu;
     public GameObject botonMenuPanel;
 
-    // --- VARIABLES DE SEGUIMIENTO ---
     private int totalAciertos = 0;
     private int totalErrores = 0;
     private int rondasExitosas = 0;
     private int rondasFallidas = 0;
     private const string NOMBRE_JUEGO = "Trazado de Figuras";
-    // --------------------------------
+
 
     private bool[] FigurasCompletadas = new bool[7];
     private int FiguraActual = -1;
 
+    public AndroidTTS tts;
+
     void Start()
     {
+        tts = FindObjectOfType<AndroidTTS>();
+
         if (MensajeCompletado != null)
             MensajeCompletado.gameObject.SetActive(false);
 
@@ -60,6 +63,8 @@ public class ManagerFig : MonoBehaviour
             if (figuras[i] != null)
                 figuras[i].SetActive(i == index);
         }
+
+        ReproducirInstruccionFigura(index);
     }
 
     public void CompletarFig(int index)
@@ -69,14 +74,14 @@ public class ManagerFig : MonoBehaviour
 
         FigurasCompletadas[index] = true;
 
-        // --- GUARDAR Y REPORTAR ---
+
         PlayerPrefs.SetInt("FiguraCompletada_" + index, 1);
         PlayerPrefs.Save();
 
         totalAciertos++;
         rondasExitosas++;
         HistorialManager.GuardarOActualizarProgreso(NOMBRE_JUEGO, totalAciertos, totalErrores, rondasExitosas, rondasFallidas);
-        // -------------------------
+
 
         if (index < botonesFiguras.Length && botonesFiguras[index] != null)
         {
@@ -87,10 +92,11 @@ public class ManagerFig : MonoBehaviour
             btn.interactable = false;
         }
 
+        Hablar("Figura completada, felicidades");
         StartCoroutine(MostrarMensajeYRegresar());
     }
 
-    // Función para que TrazoFig reporte errores
+   
     public void RegistrarError()
     {
         totalErrores++;
@@ -131,6 +137,52 @@ public class ManagerFig : MonoBehaviour
         ContenedorFig.SetActive(false);
         PanelFig.SetActive(true);
         Instruccion.SetActive(true);
+    }
+
+    void ReproducirInstruccionFigura(int index)
+    {
+#if UNITY_EDITOR
+        Debug.Log(figuras[index].name + ", sigue la línea de trazo");
+        return;
+#endif
+
+        if (tts == null)
+        {
+            Debug.LogWarning("TTS no asignado");
+            return;
+        }
+
+        if (!tts.IsReady)
+        {
+            Debug.LogWarning("TTS aún no está listo");
+            return;
+        }
+
+        string nombreFigura = figuras[index].name.Replace("Fig", "");
+
+        tts.Speak("Figura " + nombreFigura + ", sigue la línea de trazo");
+    }
+
+    public void Hablar(string texto)
+    {
+#if UNITY_EDITOR
+        Debug.Log(texto);
+        return;
+#endif
+
+        if (tts == null)
+        {
+            Debug.LogWarning("TTS no asignado");
+            return;
+        }
+
+        if (!tts.IsReady)
+        {
+            Debug.LogWarning("TTS aún no está listo");
+            return;
+        }
+
+        tts.Speak(texto);
     }
 
     public void Menu()

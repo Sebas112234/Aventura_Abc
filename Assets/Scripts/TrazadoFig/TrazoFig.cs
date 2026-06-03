@@ -258,7 +258,10 @@ public class TrazoFig : MonoBehaviour
         MensajeReintentar.gameObject.SetActive(false);
 
         if (managerFig != null)
+        {
+            managerFig.Hablar("Trata de no salir de la linea, intenta de nuevo");
             managerFig.ReintentarFig();
+        }
         else
             ReintentarTrazo();
 
@@ -383,8 +386,7 @@ public class TrazoFig : MonoBehaviour
 
         if (managerFig != null)
         {
-            // Enviamos el nombre del juego, los aciertos y errores actuales, 
-            // 0 rondas exitosas y 1 ronda fallida para que el % baje.
+            managerFig.Hablar("Parece que tienes problemas, trata con otra figura para practicar");
             managerFig.RegistrarError();
         }
 
