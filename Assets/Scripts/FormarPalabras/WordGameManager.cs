@@ -48,6 +48,9 @@ public class WordGameManager : MonoBehaviour {
     private int errores = 0;
     private string nombreJuego = "Formar Palabras";
 
+    // CANDADO DE SEGURIDAD: Evita el spam de clics mientras transiciona de nivel
+    private bool isValidating = false;
+
     void Start() {
         if (ttsManager == null) {
             ttsManager = FindObjectOfType<AndroidTTS>();
@@ -105,6 +108,7 @@ public class WordGameManager : MonoBehaviour {
     }
 
     public void StartNewRound() {
+        isValidating = false; // LIBERA EL CANDADO: El jugador puede interactuar y validar otra vez
         currentPlacedSyllable = "";
         activeDraggedObject = null;
 
@@ -138,6 +142,8 @@ public class WordGameManager : MonoBehaviour {
     }
 
     public void OnSyllableDropped(string value, DraggableSyllable draggedScript) {
+        if (isValidating) return; // Protege la interfaz si ya se envió la respuesta
+
         if (activeDraggedObject != null) {
             activeDraggedObject.gameObject.SetActive(true);
             activeDraggedObject.ReturnToStart();
@@ -159,12 +165,16 @@ public class WordGameManager : MonoBehaviour {
     }
 
     public void ValidarPalabra() {
+        // CORRECCIÓN PRINCIPAL: Si ya se presionó validar y está en espera, ignora cualquier otro clic
+        if (isValidating) return; 
+
         if (string.IsNullOrEmpty(currentPlacedSyllable)) {
             feedbackText.text = "Primero coloca una sílaba";
             return;
         }
 
         if (currentPlacedSyllable == missingSyllable) {
+            isValidating = true; // CIERRA EL CANDADO: Bloquea futuros clics o interacciones spam
             aciertos++;
             wordsPlayed++;
 
